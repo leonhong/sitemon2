@@ -159,3 +159,13 @@ void Script::loadCookiesElement(TiXmlElement *pElement, HTTPRequest &request)
 		}
 	}
 }
+
+void Script::setAcceptCompressed(bool acceptCompressed)
+{
+	std::vector<HTTPRequest>::iterator it = m_aSteps.begin();
+
+	for (; it != m_aSteps.end(); ++it)
+	{
+		it->setAcceptCompressed(acceptCompressed);
+	}
+}

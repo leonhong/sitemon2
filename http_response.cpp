@@ -9,3 +9,7 @@
 
 #include "http_response.h"
 
+HTTPResponse::HTTPResponse(bool storeHeader, bool storeBody) : contentSize(0), downloadSize(0), m_storeHeader(storeHeader), m_storeBody(storeBody)
+{
+
+}

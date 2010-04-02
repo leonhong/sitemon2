@@ -28,6 +28,9 @@ public:
 	inline std::vector<HTTPRequest>::iterator begin() { return m_aSteps.begin(); }
 	inline std::vector<HTTPRequest>::iterator end() { return m_aSteps.end(); }
 
+	// functions to set stuff for all steps
+	void setAcceptCompressed(bool acceptCompressed);
+
 protected:
 	void loadRequestElement(TiXmlElement *pElement);
 	void loadParamsElement(TiXmlElement *pElement, HTTPRequest &request);

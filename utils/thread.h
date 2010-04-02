@@ -13,7 +13,7 @@ class Thread
 {
 public:
 	Thread();
-	~Thread();
+	virtual ~Thread();
 
 	bool start();
 	void stop();

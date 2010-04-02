@@ -19,7 +19,7 @@ static unsigned long id_function(void);
 
 #endif
 
-bool performSingleRequest(HTTPRequest &request);
+bool performSingleRequest(HTTPRequest &request, bool outputHeader);
 bool performScriptRequest(Script &script);
 bool performConcurrentScriptRequest(Script &script, int threads, const std::string &outputPath);
 

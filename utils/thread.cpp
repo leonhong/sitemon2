@@ -53,11 +53,11 @@ bool Thread::start()
 
 	m_thread = CreateThread(0, 0, threadProc, m_threadObject, 0, &threadID);
 #else
-	pthread_attr_t attr;
-	pthread_attr_init(&attr);
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+//	pthread_attr_t attr;
+//	pthread_attr_init(&attr);
+//	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
-	int ret = pthread_create(&m_thread, &attr, threadProc, (void *)m_threadObject);
+	int ret = pthread_create(&m_thread, NULL, threadProc, (void *)m_threadObject);
 	
 	if (ret)
 	{

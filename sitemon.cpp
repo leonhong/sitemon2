@@ -1,14 +1,20 @@
 #include "http_engine.h"
 #include "sitemon.h"
 #include "request_thread.h"
+#include "results_storage.h"
 
-bool performSingleRequest(HTTPRequest &request)
+bool performSingleRequest(HTTPRequest &request, bool outputHeader)
 {
 	HTTPEngine engine;
 	HTTPResponse response;
 
 	if (engine.performRequest(request, response))
 	{
+		if (outputHeader)
+		{
+			std::cout << response.header << "\n";
+		}
+
 		outputResponse(response);
 	}
 	else
@@ -46,51 +52,80 @@ bool performConcurrentScriptRequest(Script &script, int threads, const std::stri
 #endif
 
 	std::vector<RequestThread *> aThreads;
+	
+	int threadCount = 0;
 
 	for (int i = 0; i < threads; i++)
 	{
-		requestThreadData *data = new requestThreadData;
-		data->pScript = &script;
-		data->thread = i + 1;
+		RequestThreadData *data = new RequestThreadData(i + 1, &script, 0);
 	
 		RequestThread *newThread = new RequestThread(data);
 
 		if (newThread)
 		{
-			newThread->start();
+			threadCount++;
 
 			aThreads.push_back(newThread);
 		}
 	}
+	
+	printf("Created %i threads...\n", threadCount);
+	
+	for (std::vector<RequestThread *>::iterator it = aThreads.begin(); it != aThreads.end(); ++it)
+	{
+		(*it)->start();
+	}
+	
+	ConcurrentHitResults results;
 
 	for (std::vector<RequestThread *>::iterator it = aThreads.begin(); it != aThreads.end(); ++it)
 	{
 		(*it)->waitForCompletion();
+		results.addResults((*it)->getResponses());
+		delete *it;
 	}
 
 #ifdef _MSC_VER
 	thread_cleanup();
 #endif
+	
+	if (!outputPath.empty())
+	{
+		results.outputResultsToCSV(outputPath);
+	}
+	
+	printf("All threads finished.\n");
 
 	return true;
 }
 
 void outputResponse(const HTTPResponse &response)
 {
-	std::cout << "Final URL: " << response.finalURL << "\n";
-	std::cout << "Respone code: " << response.responseCode << "\n";
+	std::cout << "Final URL:\t\t" << response.finalURL << "\n";
+	std::cout << "Respone code:\t\t" << response.responseCode << "\n\n";
 
-	std::cout << "DNS Lookup: " << response.lookupTime << " seconds.\n";
-	std::cout << "Connection: " << response.connectTime << " seconds.\n";
-	std::cout << "Data start: " << response.dataStartTime << " seconds.\n";
+	std::cout << "DNS Lookup:\t\t" << response.lookupTime << " seconds.\n";
+	std::cout << "Connection:\t\t" << response.connectTime << " seconds.\n";
+	std::cout << "Data start:\t\t" << response.dataStartTime << " seconds.\n";
 
 	if (response.redirectCount)
 	{
-		std::cout << "Redirect count: " << response.redirectCount << ".\n";
-		std::cout << "Redirect time: " << response.redirectTime << " seconds.\n";
+		std::cout << "Redirect count:\t\t" << response.redirectCount << ".\n";
+		std::cout << "Redirect time:\t\t" << response.redirectTime << " seconds.\n";
 	}
 
-	std::cout << "Total time: " << response.totalTime << " seconds.\n";
+	std::cout << "Total time:\t\t" << response.totalTime << " seconds.\n\n";
+	
+	std::cout << "Content size:\t\t" << response.contentSize << "\n";
+	std::cout << "Download size:\t\t" << response.downloadSize << "\n";
+
+	if (response.contentSize > response.downloadSize)
+	{
+		int compression = 100 - (int)(((double)response.downloadSize / response.contentSize) * 100.0);
+
+		std::cout << "Compression Savings:\t" << compression << "%\n";
+		std::cout << "Content Encoding:\t" << response.contentEncoding << "\n";
+	}
 }
 
 #ifdef _MSC_VER

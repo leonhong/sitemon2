@@ -23,12 +23,14 @@ static std::string buildParametersString(HTTPRequest &request);
 class HTTPEngine
 {
 public:
-	HTTPEngine();
+	HTTPEngine(bool threaded = false);
 	
 	bool setupCURLHandleFromRequest(CURL *handle, HTTPRequest &request);
 	bool performRequest(HTTPRequest &request, HTTPResponse &response, bool allowDebug = true);
 
-	bool extractResponseFromCURLHandle(CURL *handle, HTTPResponse &response);	
+	bool extractResponseFromCURLHandle(CURL *handle, HTTPResponse &response);
+	
+	void initCURLHandle();
 	
 protected:
 	CURL *	m_handle;	

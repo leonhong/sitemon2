@@ -10,7 +10,17 @@
 #include "http_engine.h"
 #include <iostream>
 
-HTTPEngine::HTTPEngine()
+// when creating threads, we want the CURL handle within the thread to create the handle
+// so init it later on
+HTTPEngine::HTTPEngine(bool threaded)
+{
+	if (!threaded)
+	{
+		m_handle = curl_easy_init();
+	}
+}
+
+void HTTPEngine::initCURLHandle()
 {
 	m_handle = curl_easy_init();
 }
@@ -56,7 +66,7 @@ bool HTTPEngine::setupCURLHandleFromRequest(CURL *handle, HTTPRequest &request)
 	// blank to enable CURL's cookie handler
 	curl_easy_setopt(handle, CURLOPT_COOKIEFILE, "");
 
-	if (request.hasParameters())
+	if (request.hasCookies())
 	{
 		std::string cookies;
 		std::vector<HTTPCookie>::iterator it = request.cookies_begin();
@@ -134,6 +144,8 @@ bool HTTPEngine::performRequest(HTTPRequest &request, HTTPResponse &response, bo
 		return false;
 	
 	extractResponseFromCURLHandle(m_handle, response);
+	
+	curl_easy_cleanup(m_handle);
 
 	return true;
 }
@@ -147,7 +159,11 @@ static size_t writeBodyData(void *buffer, size_t size, size_t nmemb, void *userp
 	
 	HTTPResponse *response = static_cast<HTTPResponse *>(userp);
 	
-	response->content.append(reinterpret_cast<char *>(buffer), full_size);
+	if (response->m_storeBody)
+	{
+		response->content.append(reinterpret_cast<char *>(buffer), full_size);
+	}
+	response->contentSize += full_size;
 	
 	return full_size;
 }
@@ -168,7 +184,7 @@ static size_t writeHeaderData(void *buffer, size_t size, size_t nmemb, void *use
 	if (nColon > 0)
 	{
 		std::string fieldName = headerLine.substr(0, nColon);
-		std::string value = headerLine.substr(nColon + 1);
+		std::string value = headerLine.substr(nColon + 2);
 		
 		if (fieldName == "Content-Encoding")
 		{
@@ -180,7 +196,10 @@ static size_t writeHeaderData(void *buffer, size_t size, size_t nmemb, void *use
 		}
 	}
 	
-	response->header += headerLine;
+	if (response->m_storeHeader)
+	{
+		response->header += headerLine;
+	}
 	
 	return full_size;
 }

@@ -15,7 +15,7 @@
 class HTTPResponse
 {
 public:
-	HTTPResponse() { };
+	HTTPResponse(bool storeHeader = true, bool storeBody = true);
 	
 	time_t		timestamp;
 	long		responseCode;
@@ -29,10 +29,15 @@ public:
 	std::string		finalURL;
 	std::string		content;
 	std::string		header;
+	long		contentSize;
 	long		downloadSize;
 	std::string		contentType;
 	std::string		contentEncoding;
 	std::string		server;
+	
+	int		m_thread;
+	bool	m_storeHeader;
+	bool	m_storeBody;
 
 };
 

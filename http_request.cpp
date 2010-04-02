@@ -9,12 +9,12 @@
 
 #include "http_request.h"
 
-HTTPRequest::HTTPRequest() : m_requestType(HTTP_GET), m_pauseTime(0)
+HTTPRequest::HTTPRequest() : m_requestType(HTTP_GET), m_pauseTime(0), m_acceptCompressed(false), m_storeHeader(true), m_storeBody(true)
 {
 
 }
 
-HTTPRequest::HTTPRequest(const std::string &url) : m_url(url), m_requestType(HTTP_GET), m_pauseTime(0)
+HTTPRequest::HTTPRequest(const std::string &url) : m_url(url), m_requestType(HTTP_GET), m_pauseTime(0), m_acceptCompressed(false), m_storeHeader(true), m_storeBody(true)
 {
 
 }

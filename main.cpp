@@ -5,21 +5,29 @@
 
 #include "sitemon.h"
 
+static void printUsage();
+
 int main(int argc, char *const argv[])
 {
 	char *szURL = 0;
 	char *szScript = 0;
+	char *szOutputFile = 0;
 
 	bool isScript = false;
 	bool concurrent = false;
+
+	bool outputHeader = false;
+	bool outputBody = false;
+	
+	bool acceptCompressed = false;
+
 	int threads = 0;
 
     curl_global_init(CURL_GLOBAL_ALL);
 
 	if (argc == 1 || (argc == 2 && (strcmp(argv[1], "--help") == 0) || strcmp(argv[1], "/?") == 0))
 	{
-		// print usage
-		std::cout << "Invalid usage\n";
+		printUsage();
 		return 0;
 	}
 	else
@@ -40,6 +48,23 @@ int main(int argc, char *const argv[])
 				threads = atoi((char *)argv[i + 2]);
 				
 				i += 2;
+				
+				if (argc > i) // do we have an output file?
+				{
+					szOutputFile = (char *)argv[i + 1];
+				}
+			}
+			else if (strcmp(argv[i], "-oh") == 0)
+			{
+				outputHeader = true;
+			}
+			else if (strcmp(argv[i], "-ob") == 0)
+			{
+				outputBody = true;
+			}
+			else if (strcmp(argv[i], "-ac") == 0)
+			{
+				acceptCompressed = true;
 			}
 			else
 			{
@@ -50,18 +75,33 @@ int main(int argc, char *const argv[])
 	
 	if (!isScript)
 	{
-		HTTPRequest request(szURL);	
-	
-		performSingleRequest(request);
+		HTTPRequest request(szURL);
+
+		if (acceptCompressed)
+		{
+			request.setAcceptCompressed(true);
+		}
+
+		performSingleRequest(request, outputHeader);
 	}
 	else
 	{
 		Script script;
 		if (!script.loadScriptFile(szScript))
 		{
-			std::cout << "Can't open file...\n";
+			std::cout << "Can't open file: " << szScript << "\n";
 			return -1;
 		}
+
+		// command prompt options override script settings for certain things
+
+		if (acceptCompressed)
+		{
+			script.setAcceptCompressed(true);
+		}
+
+		// add stuff here to read the script file and see if there are any concurrent params
+		// then we can just run the script, and it will do the concurrent stuff if it's specified
 
 		if (!concurrent)
 		{
@@ -69,9 +109,23 @@ int main(int argc, char *const argv[])
 		}
 		else
 		{
-			performConcurrentScriptRequest(script, threads, "");
+			std::string outputFile = szOutputFile;
+			performConcurrentScriptRequest(script, threads, outputFile);
 		}
 	}
 	
+	curl_global_cleanup();
+	
     return 0;
+}
+
+void printUsage()
+{
+	printf("Sitemon version 2.0\nUsage:\nSingle test:\t\tsitemon [<options>] <URL>\n"
+		   "Script test:\t\tsitemon [<options>] -s <script_path>\n"
+		   "Script Load test:\tsitemon [<options>] -sm <script_path> <num threads> [output_file]\n"
+		   "Options:\n-ac\t\t: Accept compressed content\n"
+		   "-ol <val>\t: Output logging level (to screen). 0 = minimal (default), 2 = max.\n"
+		   "-oh\t\t: Output headers\n"
+		   "-ob\t\t: Output body\n");
 }

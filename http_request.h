@@ -57,6 +57,8 @@ public:
 	const std::string getContentType() { return m_contentType; }
 	bool getAcceptCompressed() { return m_acceptCompressed; }
 	int getPauseTime() { return m_pauseTime; }
+	bool getStoreHeader() { return m_storeHeader; }
+	bool getStoreBody() { return m_storeBody; }
 	
 	void setRequestType(RequestType requestType) { m_requestType = requestType; }
 	void setDescription(std::string &description) { m_description = description; }
@@ -70,6 +72,8 @@ public:
 	void setContentType(std::string &contentType) { m_contentType = contentType; }
 	void setAcceptCompressed(bool acceptCompressed) { m_acceptCompressed = acceptCompressed; }
 	void setPauseTime(int pauseTime) { m_pauseTime = pauseTime; }
+	void setStoreHeader(bool storeHeader) { m_storeHeader = storeHeader; }
+	void setStoreBody(bool storeBody) { m_storeBody = storeBody; }
 
 	void addParameter(std::string &name, std::string &value);
 	void addCookie(std::string &name, std::string &value);
@@ -101,6 +105,10 @@ protected:
 	std::string		m_contentType;
 	
 	bool			m_acceptCompressed;
+
+	bool			m_storeHeader;
+	bool			m_storeBody;
+
 	int				m_pauseTime;
 	
 	std::vector<HTTPParameter> m_aParameters;
