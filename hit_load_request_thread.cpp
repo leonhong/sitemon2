@@ -1,6 +1,6 @@
-#include "request_thread.h"
+#include "hit_load_request_thread.h"
 
-RequestThread::RequestThread(RequestThreadData *data)
+HitLoadRequestThread::HitLoadRequestThread(RequestThreadData *data)
 {
 	m_Script.copyScript(data->m_pScript);
 	m_threadID = data->m_thread;
@@ -9,12 +9,12 @@ RequestThread::RequestThread(RequestThreadData *data)
 	delete data;
 }
 
-RequestThread::~RequestThread()
+HitLoadRequestThread::~HitLoadRequestThread()
 {
 
 }
 
-void RequestThread::run()
+void HitLoadRequestThread::run()
 {
 	HTTPEngine engine(false);
 	

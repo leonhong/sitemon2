@@ -1,6 +1,6 @@
 #include "http_engine.h"
 #include "sitemon.h"
-#include "request_thread.h"
+#include "hit_load_request_thread.h"
 #include "results_storage.h"
 
 bool performSingleRequest(HTTPRequest &request, bool outputHeader)
@@ -51,7 +51,7 @@ bool performConcurrentScriptRequest(Script &script, int threads, const std::stri
 	thread_setup();
 #endif
 
-	std::vector<RequestThread *> aThreads;
+	std::vector<HitLoadRequestThread *> aThreads;
 	
 	int threadCount = 0;
 
@@ -59,7 +59,7 @@ bool performConcurrentScriptRequest(Script &script, int threads, const std::stri
 	{
 		RequestThreadData *data = new RequestThreadData(i + 1, &script, 0);
 	
-		RequestThread *newThread = new RequestThread(data);
+		HitLoadRequestThread *newThread = new HitLoadRequestThread(data);
 
 		if (newThread)
 		{
@@ -71,14 +71,14 @@ bool performConcurrentScriptRequest(Script &script, int threads, const std::stri
 	
 	printf("Created %i threads...\n", threadCount);
 	
-	for (std::vector<RequestThread *>::iterator it = aThreads.begin(); it != aThreads.end(); ++it)
+	for (std::vector<HitLoadRequestThread *>::iterator it = aThreads.begin(); it != aThreads.end(); ++it)
 	{
 		(*it)->start();
 	}
 	
 	ConcurrentHitResults results;
 
-	for (std::vector<RequestThread *>::iterator it = aThreads.begin(); it != aThreads.end(); ++it)
+	for (std::vector<HitLoadRequestThread *>::iterator it = aThreads.begin(); it != aThreads.end(); ++it)
 	{
 		(*it)->waitForCompletion();
 		results.addResults((*it)->getResponses());

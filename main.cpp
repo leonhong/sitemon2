@@ -4,6 +4,7 @@
 #include "script.h"
 
 #include "sitemon.h"
+#include "http_server.h"
 
 static void printUsage();
 
@@ -20,10 +21,10 @@ int main(int argc, char *const argv[])
 	bool outputBody = false;
 	
 	bool acceptCompressed = false;
+	
+	bool runWeb = false;
 
 	int threads = 0;
-
-    curl_global_init(CURL_GLOBAL_ALL);
 
 	if (argc == 1 || (argc == 2 && (strcmp(argv[1], "--help") == 0) || strcmp(argv[1], "/?") == 0))
 	{
@@ -66,11 +67,28 @@ int main(int argc, char *const argv[])
 			{
 				acceptCompressed = true;
 			}
+			else if (strcmp(argv[i], "-web") == 0)
+			{
+				runWeb = true;
+			}
 			else
 			{
 				szURL = (char *)argv[i];
 			}
 		}
+	}
+	
+	curl_global_init(CURL_GLOBAL_ALL);
+	
+	if (runWeb)
+	{
+		std::cout << "Starting web server...\n";
+		HTTPServer server(8080);
+		server.start();
+		
+		curl_global_cleanup();
+		
+		return 0;
 	}
 	
 	if (!isScript)
@@ -122,7 +140,7 @@ int main(int argc, char *const argv[])
 void printUsage()
 {
 	printf("Sitemon version 2.0\nUsage:\nSingle test:\t\tsitemon [<options>] <URL>\n"
-		   "Script test:\t\tsitemon [<options>] -s <script_path>\n"
+		   "Single Script test:\t\tsitemon [<options>] -s <script_path>\n"
 		   "Script Load test:\tsitemon [<options>] -sm <script_path> <num threads> [output_file]\n"
 		   "Options:\n-ac\t\t: Accept compressed content\n"
 		   "-ol <val>\t: Output logging level (to screen). 0 = minimal (default), 2 = max.\n"

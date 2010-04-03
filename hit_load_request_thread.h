@@ -1,5 +1,5 @@
-#ifndef REQUEST_THREAD_H
-#define REQUEST_THREAD_H
+#ifndef HIT_LOAD_REQUEST_THREAD_H
+#define HIT_LOAD_REQUEST_THREAD_H
 
 #include "utils/thread.h"
 
@@ -15,11 +15,11 @@ struct RequestThreadData
 	int m_debugLevel;
 };
 
-class RequestThread : public Thread
+class HitLoadRequestThread : public Thread
 {
 public:
-	RequestThread(RequestThreadData *data);
-	virtual ~RequestThread();
+	HitLoadRequestThread(RequestThreadData *data);
+	virtual ~HitLoadRequestThread();
 
 	virtual void run();
 	
