@@ -18,4 +18,16 @@ protected:
 	std::string m_text;
 };
 
+class HTTPServerFileResponse
+{
+public:
+	HTTPServerFileResponse(const std::string &path, bool binary = false);
+	
+	std::string responseString();
+	
+protected:
+	std::string m_path;
+	bool		m_binary;
+};
+
 #endif

@@ -15,7 +15,7 @@
 class HTTPServer
 {
 public:
-	HTTPServer(int port = 8080);
+	HTTPServer(int port = 8080, const std::string &webContentPath = "");
 	
 	bool start();
 	

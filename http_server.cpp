@@ -2,7 +2,7 @@
 #include "utils/socket.h"
 #include "http_server_request_thread.h"
 
-HTTPServer::HTTPServer(int port) : m_port(port)
+HTTPServer::HTTPServer(int port, const std::string &webContentPath) : m_port(port), m_webContentPath(webContentPath)
 {
 	
 }
@@ -31,7 +31,7 @@ bool HTTPServer::start()
 		Socket *newSock = new Socket();
 		if (mainSocket.accept(newSock))
 		{
-			HTTPServerRequestThread *newThread = new HTTPServerRequestThread(newSock);
+			HTTPServerRequestThread *newThread = new HTTPServerRequestThread(newSock, m_webContentPath);
 			
 			if (newThread)
 			{

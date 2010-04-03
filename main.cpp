@@ -83,7 +83,9 @@ int main(int argc, char *const argv[])
 	if (runWeb)
 	{
 		std::cout << "Starting web server...\n";
-		HTTPServer server(8080);
+		
+		std::string webContentPath;
+		HTTPServer server(8080, webContentPath);
 		server.start();
 		
 		curl_global_cleanup();

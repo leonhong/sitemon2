@@ -6,7 +6,7 @@
 
 #include "http_engine.h"
 
-HTTPServerRequestThread::HTTPServerRequestThread(Socket *socket, std::string webContentPath) : m_pSocket(socket), m_webContentPath(webContentPath)
+HTTPServerRequestThread::HTTPServerRequestThread(Socket *socket, const std::string &webContentPath) : m_pSocket(socket), m_webContentPath(webContentPath)
 {
 }
 
@@ -31,10 +31,9 @@ void HTTPServerRequestThread::run()
 	
 	if (request.parse())
 	{
-		std::string content = "<html>\n<body>\n";
-		
 		if (request.getPath() == "/run" && request.hasParams())
 		{
+			std::string content = "<html>\n<head><title>Sitemon Web Interface</title></head>\n<body>\n";
 			std::string url = request.getParam("url");
 			content += "<p>\nTesting: ";
 			content += url;
@@ -56,21 +55,46 @@ void HTTPServerRequestThread::run()
 			else
 			{
 				content += "Couldn't perform test.<br>\n";				
-			}			
+			}
+			
+			content += "\n</body>\n</html>\n";
+			
+			HTTPServerResponse resp(200, content);
+			response = resp.responseString();
 		}
-		else // hard coded html for simple form for the moment
+		else
 		{
-			content += "<h3>Sitemon Web Interface</h3>\n<form action=\"run\" method=\"get\">\n";
-			content += "<p><label for=\"url\"><small>URL</small></label>\n";
-			content += "<input type=\"text\" name=\"url\" id=\"url\" value=\"http://\" size=\"40\"/></p>\n";
-			content += "<p><input type=\"submit\" value=\"Run test\"/>\n";
-			content += "</form>\n";		
+			std::string requestedPath = request.getPath();
+			if (requestedPath.size() > 1 && requestedPath.substr(0, 1) == "/") // an actual relative path was specified
+			{
+				requestedPath = requestedPath.substr(1); // knock off the leading slash
+			}
+			else if (requestedPath.size() == 1 && requestedPath == "/")
+			{
+				// default is index.html
+				requestedPath = "index.html";
+			}
+			
+			if (m_webContentPath.empty())
+			{
+				std::string content = "<html>\n<head><title>Sitemon Web Interface</title></head>\n<body>\n";
+				content += "<h3>Sitemon Web Interface</h3>\n<form action=\"run\" method=\"get\">\n";
+				content += "<p><label for=\"url\"><small>URL</small></label>\n";
+				content += "<input type=\"text\" name=\"url\" id=\"url\" value=\"http://\" size=\"40\"/></p>\n";
+				content += "<p><input type=\"submit\" value=\"Run test\"/>\n";
+				content += "</form>\n</body>\n</html>\n";
+				
+				HTTPServerResponse resp(200, content);
+				response = resp.responseString();
+			}
+			else
+			{
+				std::string filePath = m_webContentPath + requestedPath;
+			
+				HTTPServerFileResponse resp(filePath);
+				response = resp.responseString();
+			}
 		}
-		
-		content += "\n</body>\n</html>\n";
-		
-		HTTPServerResponse resp(200, content);
-		response = resp.responseString();
 	}
 	else
 	{

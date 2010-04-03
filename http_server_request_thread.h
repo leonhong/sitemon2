@@ -8,7 +8,7 @@
 class HTTPServerRequestThread: public Thread
 {
 public:
-	HTTPServerRequestThread(Socket *socket, std::string webContentPath = "");
+	HTTPServerRequestThread(Socket *socket, const std::string &webContentPath = "");
 	virtual ~HTTPServerRequestThread();
 	
 	virtual void run();
