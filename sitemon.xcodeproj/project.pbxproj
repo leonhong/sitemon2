@@ -27,6 +27,9 @@
 		D0A36B2C113ABC0A0069D596 /* script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0A36B2B113ABC0A0069D596 /* script.cpp */; };
 		D0D19507116655180040E1B7 /* http_server_request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0D19506116655180040E1B7 /* http_server_request.cpp */; };
 		D0E649B011660B680024C4AC /* results_storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0E649AF11660B680024C4AC /* results_storage.cpp */; };
+		D0F382C71169001D007765A1 /* sqlite_db.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F382C01169001D007765A1 /* sqlite_db.cpp */; };
+		D0F382C81169001D007765A1 /* sqlite_query.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F382C21169001D007765A1 /* sqlite_query.cpp */; };
+		D0F382C91169001D007765A1 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = D0F382C41169001D007765A1 /* sqlite3.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -80,6 +83,12 @@
 		D0D19506116655180040E1B7 /* http_server_request.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_server_request.cpp; sourceTree = "<group>"; };
 		D0E649AE11660B680024C4AC /* results_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = results_storage.h; sourceTree = "<group>"; };
 		D0E649AF11660B680024C4AC /* results_storage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = results_storage.cpp; sourceTree = "<group>"; };
+		D0F382C01169001D007765A1 /* sqlite_db.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite_db.cpp; sourceTree = "<group>"; };
+		D0F382C11169001D007765A1 /* sqlite_db.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite_db.h; sourceTree = "<group>"; };
+		D0F382C21169001D007765A1 /* sqlite_query.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite_query.cpp; sourceTree = "<group>"; };
+		D0F382C31169001D007765A1 /* sqlite_query.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite_query.h; sourceTree = "<group>"; };
+		D0F382C41169001D007765A1 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
+		D0F382C51169001D007765A1 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +164,12 @@
 		D0A36AFD113ABB610069D596 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				D0F382C01169001D007765A1 /* sqlite_db.cpp */,
+				D0F382C11169001D007765A1 /* sqlite_db.h */,
+				D0F382C21169001D007765A1 /* sqlite_query.cpp */,
+				D0F382C31169001D007765A1 /* sqlite_query.h */,
+				D0F382C41169001D007765A1 /* sqlite3.c */,
+				D0F382C51169001D007765A1 /* sqlite3.h */,
 				D04F79C211662C7000767EDF /* socket.cpp */,
 				D04F79C311662C7000767EDF /* socket.h */,
 				D08E829A1163F269009B2CC1 /* mutex.cpp */,
@@ -231,6 +246,9 @@
 				D04F7A01116637AC00767EDF /* http_server_responses.cpp in Sources */,
 				D0D19507116655180040E1B7 /* http_server_request.cpp in Sources */,
 				D01AFA2811689032005FD626 /* config.cpp in Sources */,
+				D0F382C71169001D007765A1 /* sqlite_db.cpp in Sources */,
+				D0F382C81169001D007765A1 /* sqlite_query.cpp in Sources */,
+				D0F382C91169001D007765A1 /* sqlite3.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

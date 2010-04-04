@@ -55,6 +55,10 @@ bool Config::loadConfigFile(const std::string &configFilePath)
 		{
 			m_webContentPath = content;
 		}
+		else if (elementName == "db_path")
+		{
+			m_dbPath = content;
+		}
 	}	
 	
 	return true;

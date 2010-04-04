@@ -88,7 +88,9 @@ int main(int argc, char *const argv[])
 		std::cout << "Starting web server...\n";
 		
 		std::string webContentPath = configFile.getWebContentPath();
-		HTTPServer server(8080, webContentPath);
+		std::string dbPath = configFile.getDBPath();
+		
+		HTTPServer server(8080, webContentPath, dbPath);
 		server.start();
 		
 		curl_global_cleanup();

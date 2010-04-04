@@ -6,7 +6,8 @@
 
 #include "http_engine.h"
 
-HTTPServerRequestThread::HTTPServerRequestThread(Socket *socket, const std::string &webContentPath) : m_pSocket(socket), m_webContentPath(webContentPath)
+HTTPServerRequestThread::HTTPServerRequestThread(Socket *socket, const std::string &webContentPath, SQLiteDB *pMainDB)
+	: m_pSocket(socket), m_webContentPath(webContentPath), m_pMainDB(pMainDB)
 {
 }
 

@@ -15,13 +15,14 @@
 class HTTPServer
 {
 public:
-	HTTPServer(int port = 8080, const std::string &webContentPath = "");
+	HTTPServer(int port = 8080, const std::string &webContentPath = "", const std::string &dbPath = "");
 	
 	bool start();
 	
 protected:
 	int m_port;
 	std::string m_webContentPath;
+	std::string m_dbPath;
 
 };
 

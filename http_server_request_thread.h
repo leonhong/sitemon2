@@ -4,11 +4,12 @@
 
 #include "utils/thread.h"
 #include "utils/Socket.h"
+#include "utils/sqlite_query.h"
 
 class HTTPServerRequestThread: public Thread
 {
 public:
-	HTTPServerRequestThread(Socket *socket, const std::string &webContentPath = "");
+	HTTPServerRequestThread(Socket *socket, const std::string &webContentPath = "", SQLiteDB *pMainDB = NULL);
 	virtual ~HTTPServerRequestThread();
 	
 	virtual void run();
@@ -16,7 +17,7 @@ public:
 protected:
 	Socket *	m_pSocket;
 	std::string	m_webContentPath;
-	
+	SQLiteDB *	m_pMainDB;	
 };
 	
 #endif

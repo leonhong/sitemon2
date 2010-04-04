@@ -2,7 +2,9 @@
 #include "utils/socket.h"
 #include "http_server_request_thread.h"
 
-HTTPServer::HTTPServer(int port, const std::string &webContentPath) : m_port(port), m_webContentPath(webContentPath)
+#include "utils/sqlite_db.h"
+
+HTTPServer::HTTPServer(int port, const std::string &webContentPath, const std::string &dbPath) : m_port(port), m_webContentPath(webContentPath), m_dbPath(dbPath)
 {
 	
 }
@@ -26,6 +28,13 @@ bool HTTPServer::start()
 		return false;
 	}
 	
+	SQLiteDB *pMainDB = NULL;
+	
+	if (!m_dbPath.empty())
+	{
+		pMainDB = new SQLiteDB(m_dbPath);
+	}
+	
 	while (true)
 	{
 		Socket *newSock = new Socket();
@@ -47,7 +56,10 @@ bool HTTPServer::start()
 		{
 			printf("Couldn't accept connection\n");
 		}
-	}	
+	}
+	
+	if (pMainDB)
+		delete pMainDB;
 	
 	Socket::cleanupWinsocks();
 	return true;
