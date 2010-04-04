@@ -31,13 +31,11 @@ void HTTPServerRequestThread::run()
 	
 	if (request.parse())
 	{
-		if (request.getPath() == "/run" && request.hasParams())
+		if (request.getPath() == "/inline_simple" && request.hasParams())
 		{
-			std::string content = "<html>\n<head><title>Sitemon Web Interface</title></head>\n<body>\n";
 			std::string url = request.getParam("url");
-			content += "<p>\nTesting: ";
-			content += url;
-			content += "<br><br>\n";
+			
+			std::string content;
 			
 			HTTPEngine engine;
 			HTTPRequest httpTestRequest(url);
@@ -56,8 +54,6 @@ void HTTPServerRequestThread::run()
 			{
 				content += "Couldn't perform test.<br>\n";				
 			}
-			
-			content += "\n</body>\n</html>\n";
 			
 			HTTPServerResponse resp(200, content);
 			response = resp.responseString();
@@ -78,13 +74,9 @@ void HTTPServerRequestThread::run()
 			if (m_webContentPath.empty())
 			{
 				std::string content = "<html>\n<head><title>Sitemon Web Interface</title></head>\n<body>\n";
-				content += "<h3>Sitemon Web Interface</h3>\n<form action=\"run\" method=\"get\">\n";
-				content += "<p><label for=\"url\"><small>URL</small></label>\n";
-				content += "<input type=\"text\" name=\"url\" id=\"url\" value=\"http://\" size=\"40\"/></p>\n";
-				content += "<p><input type=\"submit\" value=\"Run test\"/>\n";
-				content += "</form>\n</body>\n</html>\n";
+				content += "<h3>Sitemon Web Interface</h3>\nError: Web Content Path not configured.\n</body>\n</html>\n";
 				
-				HTTPServerResponse resp(200, content);
+				HTTPServerResponse resp(500, content);
 				response = resp.responseString();
 			}
 			else

@@ -2,7 +2,7 @@
 #include <curl/curl.h>
 
 #include "script.h"
-
+#include "config.h"
 #include "sitemon.h"
 #include "http_server.h"
 
@@ -78,13 +78,16 @@ int main(int argc, char *const argv[])
 		}
 	}
 	
+	Config configFile;
+	configFile.loadConfigFile();
+	
 	curl_global_init(CURL_GLOBAL_ALL);
 	
 	if (runWeb)
 	{
 		std::cout << "Starting web server...\n";
 		
-		std::string webContentPath;
+		std::string webContentPath = configFile.getWebContentPath();
 		HTTPServer server(8080, webContentPath);
 		server.start();
 		

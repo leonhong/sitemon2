@@ -1,0 +1,39 @@
+<html>
+<head>
+<title>Sitemon Web Interface</title>
+<script type="text/javascript">
+function performTest()
+{
+	document.getElementById('results').innerHTML = "Running test...";
+	if (window.XMLHttpRequest)
+	{
+		var url = document.getElementById('url').value;
+		xmlhttp = new XMLHttpRequest();
+		fullGETURL = "/inline_simple" + "?url=" + url;
+		xmlhttp.onreadystatechange = resultsCallback;
+		xmlhttp.open("GET", fullGETURL, true);
+		xmlhttp.send(null);
+	}
+}
+
+function resultsCallback()
+{
+	if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+	{
+		document.getElementById("results").innerHTML = xmlhttp.responseText;
+	}
+}
+</script>
+</head>
+<body>
+<h3>Sitemon Web Interface</h3>
+<form>
+<p><label for="url"><small>URL:</small></label>
+<input type="text" id="url" value="http://" size="40"/></p>
+<p><input type='button' onclick='performTest()' value='Run Test'/></p>
+<div id="results">
+	
+</div>
+</form>
+</body>
+</html>

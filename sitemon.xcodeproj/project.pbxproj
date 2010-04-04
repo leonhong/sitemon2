@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8DD76F650486A84900D96B5E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.cpp */; settings = {ATTRIBUTES = (); }; };
 		8DD76F6A0486A84900D96B5E /* sitemon.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* sitemon.1 */; };
+		D01AFA2811689032005FD626 /* config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01AFA2711689032005FD626 /* config.cpp */; };
 		D04F799D1166298E00767EDF /* http_server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04F799C1166298E00767EDF /* http_server.cpp */; };
 		D04F79C411662C7000767EDF /* socket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04F79C211662C7000767EDF /* socket.cpp */; };
 		D04F79DB11662E8B00767EDF /* http_server_request_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04F79DA11662E8B00767EDF /* http_server_request_thread.cpp */; };
@@ -45,6 +46,8 @@
 		08FB7796FE84155DC02AAC07 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* sitemon */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sitemon; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859E8B029090EE04C91782 /* sitemon.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = sitemon.1; sourceTree = "<group>"; };
+		D01AFA2611689032005FD626 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		D01AFA2711689032005FD626 /* config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = config.cpp; sourceTree = "<group>"; };
 		D04F799B1166298E00767EDF /* http_server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_server.h; sourceTree = "<group>"; };
 		D04F799C1166298E00767EDF /* http_server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_server.cpp; sourceTree = "<group>"; };
 		D04F79C211662C7000767EDF /* socket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = socket.cpp; sourceTree = "<group>"; };
@@ -93,6 +96,8 @@
 		08FB7794FE84155DC02AAC07 /* sitemon */ = {
 			isa = PBXGroup;
 			children = (
+				D01AFA2611689032005FD626 /* config.h */,
+				D01AFA2711689032005FD626 /* config.cpp */,
 				D04F79D911662E8B00767EDF /* http_server_request_thread.h */,
 				D04F79FF116637AC00767EDF /* http_server_responses.h */,
 				D04F7A00116637AC00767EDF /* http_server_responses.cpp */,
@@ -225,6 +230,7 @@
 				D04F79DB11662E8B00767EDF /* http_server_request_thread.cpp in Sources */,
 				D04F7A01116637AC00767EDF /* http_server_responses.cpp in Sources */,
 				D0D19507116655180040E1B7 /* http_server_request.cpp in Sources */,
+				D01AFA2811689032005FD626 /* config.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
