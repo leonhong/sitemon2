@@ -30,4 +30,16 @@ protected:
 	bool		m_binary;
 };
 
+class HTTPServerTemplateFileResponse
+{
+public:
+	HTTPServerTemplateFileResponse(const std::string &path, std::string &content);
+	
+	std::string responseString();
+	
+protected:
+	std::string m_path;
+	std::string &m_content;
+};
+
 #endif

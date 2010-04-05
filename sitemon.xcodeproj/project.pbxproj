@@ -25,11 +25,13 @@
 		D0A36B06113ABB610069D596 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0A36B02113ABB610069D596 /* tinyxmlerror.cpp */; };
 		D0A36B07113ABB610069D596 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0A36B03113ABB610069D596 /* tinyxmlparser.cpp */; };
 		D0A36B2C113ABC0A0069D596 /* script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0A36B2B113ABC0A0069D596 /* script.cpp */; };
+		D0CA7D20116A1C7F007039D5 /* http_server_html_formatters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0CA7D1F116A1C7F007039D5 /* http_server_html_formatters.cpp */; };
 		D0D19507116655180040E1B7 /* http_server_request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0D19506116655180040E1B7 /* http_server_request.cpp */; };
 		D0E649B011660B680024C4AC /* results_storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0E649AF11660B680024C4AC /* results_storage.cpp */; };
 		D0F382C71169001D007765A1 /* sqlite_db.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F382C01169001D007765A1 /* sqlite_db.cpp */; };
 		D0F382C81169001D007765A1 /* sqlite_query.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F382C21169001D007765A1 /* sqlite_query.cpp */; };
 		D0F382C91169001D007765A1 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = D0F382C41169001D007765A1 /* sqlite3.c */; };
+		D0F38333116907C8007765A1 /* http_server_db_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F38332116907C8007765A1 /* http_server_db_helpers.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -79,6 +81,8 @@
 		D0A36B03113ABB610069D596 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		D0A36B2A113ABC0A0069D596 /* script.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = script.h; sourceTree = "<group>"; };
 		D0A36B2B113ABC0A0069D596 /* script.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = script.cpp; sourceTree = "<group>"; };
+		D0CA7D1E116A1C7F007039D5 /* http_server_html_formatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_server_html_formatters.h; sourceTree = "<group>"; };
+		D0CA7D1F116A1C7F007039D5 /* http_server_html_formatters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_server_html_formatters.cpp; sourceTree = "<group>"; };
 		D0D19505116655180040E1B7 /* http_server_request.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_server_request.h; sourceTree = "<group>"; };
 		D0D19506116655180040E1B7 /* http_server_request.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_server_request.cpp; sourceTree = "<group>"; };
 		D0E649AE11660B680024C4AC /* results_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = results_storage.h; sourceTree = "<group>"; };
@@ -89,6 +93,8 @@
 		D0F382C31169001D007765A1 /* sqlite_query.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite_query.h; sourceTree = "<group>"; };
 		D0F382C41169001D007765A1 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
 		D0F382C51169001D007765A1 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
+		D0F38331116907C8007765A1 /* http_server_db_helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_server_db_helpers.h; sourceTree = "<group>"; };
+		D0F38332116907C8007765A1 /* http_server_db_helpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_server_db_helpers.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +111,8 @@
 		08FB7794FE84155DC02AAC07 /* sitemon */ = {
 			isa = PBXGroup;
 			children = (
+				D0F38331116907C8007765A1 /* http_server_db_helpers.h */,
+				D0F38332116907C8007765A1 /* http_server_db_helpers.cpp */,
 				D01AFA2611689032005FD626 /* config.h */,
 				D01AFA2711689032005FD626 /* config.cpp */,
 				D04F79D911662E8B00767EDF /* http_server_request_thread.h */,
@@ -133,6 +141,8 @@
 				D09DCC6F1139730C00B4CA9F /* http_engine.cpp */,
 				D0D19505116655180040E1B7 /* http_server_request.h */,
 				D0D19506116655180040E1B7 /* http_server_request.cpp */,
+				D0CA7D1E116A1C7F007039D5 /* http_server_html_formatters.h */,
+				D0CA7D1F116A1C7F007039D5 /* http_server_html_formatters.cpp */,
 			);
 			name = sitemon;
 			sourceTree = "<group>";
@@ -249,6 +259,8 @@
 				D0F382C71169001D007765A1 /* sqlite_db.cpp in Sources */,
 				D0F382C81169001D007765A1 /* sqlite_query.cpp in Sources */,
 				D0F382C91169001D007765A1 /* sqlite3.c in Sources */,
+				D0F38333116907C8007765A1 /* http_server_db_helpers.cpp in Sources */,
+				D0CA7D20116A1C7F007039D5 /* http_server_html_formatters.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4,6 +4,8 @@
 
 #include "utils/sqlite_db.h"
 
+#include "http_server_db_helpers.h"
+
 HTTPServer::HTTPServer(int port, const std::string &webContentPath, const std::string &dbPath) : m_port(port), m_webContentPath(webContentPath), m_dbPath(dbPath)
 {
 	
@@ -33,6 +35,8 @@ bool HTTPServer::start()
 	if (!m_dbPath.empty())
 	{
 		pMainDB = new SQLiteDB(m_dbPath);
+		
+		createNeededTables(pMainDB);
 	}
 	
 	while (true)
@@ -40,7 +44,7 @@ bool HTTPServer::start()
 		Socket *newSock = new Socket();
 		if (mainSocket.accept(newSock))
 		{
-			HTTPServerRequestThread *newThread = new HTTPServerRequestThread(newSock, m_webContentPath);
+			HTTPServerRequestThread *newThread = new HTTPServerRequestThread(newSock, m_webContentPath, pMainDB);
 			
 			if (newThread)
 			{

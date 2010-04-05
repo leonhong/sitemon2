@@ -1,6 +1,7 @@
 <html>
 <head>
 <title>Sitemon Web Interface</title>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
 <script type="text/javascript">
 function performTest()
 {
@@ -26,13 +27,17 @@ function resultsCallback()
 </script>
 </head>
 <body>
-<h3>Sitemon Web Interface</h3>
-<form>
+<ul id="sitenav">
+<li><a href="/">Home</a></li>
+<li><a href="/history">History</a></li>
+</ul>
+<br><br>
+Run a single page request test.
+<form action="javascript:performTest();">
 <p><label for="url"><small>URL:</small></label>
 <input type="text" id="url" value="http://" size="40"/></p>
-<p><input type='button' onclick='performTest()' value='Run Test'/></p>
-<div id="results">
-	
+<p><input type='submit' value='Run Test'/></p>
+<div id="results" class="results">
 </div>
 </form>
 </body>

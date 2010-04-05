@@ -143,6 +143,8 @@ bool HTTPEngine::performRequest(HTTPRequest &request, HTTPResponse &response, bo
 	if (res != 0)
 		return false;
 	
+	response.requestedURL = request.getUrl();
+	
 	extractResponseFromCURLHandle(m_handle, response);
 	
 	curl_easy_cleanup(m_handle);

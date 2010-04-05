@@ -26,6 +26,8 @@ public:
 	double		totalTime;
 	double		redirectTime;
 	long		redirectCount;
+	
+	std::string		requestedURL;
 	std::string		finalURL;
 	std::string		content;
 	std::string		header;

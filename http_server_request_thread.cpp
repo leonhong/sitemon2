@@ -6,6 +6,9 @@
 
 #include "http_engine.h"
 
+#include "http_server_db_helpers.h"
+#include "http_server_html_formatters.h"
+
 HTTPServerRequestThread::HTTPServerRequestThread(Socket *socket, const std::string &webContentPath, SQLiteDB *pMainDB)
 	: m_pSocket(socket), m_webContentPath(webContentPath), m_pMainDB(pMainDB)
 {
@@ -21,8 +24,6 @@ void HTTPServerRequestThread::run()
 		return;
 	
 	std::string clientAddress = m_pSocket->getClientAddress();
-	
-	printf("Web connection accepted: %s...\n", clientAddress.c_str());
 	
 	std::string recvData;
 	m_pSocket->recv(recvData);
@@ -43,13 +44,9 @@ void HTTPServerRequestThread::run()
 			HTTPResponse httpTestResponse;
 			if (engine.performRequest(httpTestRequest, httpTestResponse))
 			{
-				char szData[128];
-				memset(szData, 0, 128);
-				sprintf(szData, "Response code: %ld<br>\nTotal time: %f<br>\nDownload size: %ld<br>\n", httpTestResponse.responseCode, httpTestResponse.totalTime,
-						httpTestResponse.downloadSize);
+				formatResponseToHTMLDL(httpTestResponse, content);
 				
-				content += "Results:<br>\n";
-				content.append(szData);				
+				addResponseToSingleTestHistoryTable(m_pMainDB, httpTestResponse);
 			}
 			else
 			{
@@ -57,6 +54,34 @@ void HTTPServerRequestThread::run()
 			}
 			
 			HTTPServerResponse resp(200, content);
+			response = resp.responseString();
+		}
+		else if (request.getPath() == "/history")
+		{
+			int offset = 0;
+			if (request.hasParams())
+			{
+				offset = atoi(request.getParam("start").c_str());
+			}
+			
+			std::string filePath = m_webContentPath + "history.tplt";
+			
+			std::string dataContent;
+			getSingleTestHistoryList(m_pMainDB, dataContent, offset);
+			
+			HTTPServerTemplateFileResponse resp(filePath, dataContent);
+			response = resp.responseString();
+		}
+		else if (request.getPath() == "/single_details" && request.hasParams())
+		{
+			long runID = atoi(request.getParam("runid").c_str());
+			
+			std::string filePath = m_webContentPath + "single_details.tplt";
+			
+			std::string dataContent;
+			formatDBSingleTestResponseToHTMLDL(m_pMainDB, runID, dataContent);
+			
+			HTTPServerTemplateFileResponse resp(filePath, dataContent);
 			response = resp.responseString();
 		}
 		else
