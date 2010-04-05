@@ -107,10 +107,19 @@ void HTTPServerRequestThread::run()
 			}
 			else
 			{
-				std::string filePath = m_webContentPath + requestedPath;
+				if (requestedPath.find("..") != -1) // try and guard against obvious exploits
+				{
+					HTTPServerResponse resp1(500, "<h3>Error occured.</h3>");
+					
+					response = resp1.responseString();
+				}
+				else
+				{
+					std::string filePath = m_webContentPath + requestedPath;
 			
-				HTTPServerFileResponse resp(filePath);
-				response = resp.responseString();
+					HTTPServerFileResponse resp(filePath);
+					response = resp.responseString();
+				}
 			}
 		}
 	}
