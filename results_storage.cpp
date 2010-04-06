@@ -7,6 +7,10 @@
  *
  */
 
+#ifdef _MSC_VER
+#include <direct.h>
+#endif
+
 #include "results_storage.h"
 
 void ConcurrentHitResults::addResult(int step, HTTPResponse &response)
@@ -101,8 +105,7 @@ bool ConcurrentHitResults::outputResultsToCSV(std::string path)
 			fprintf(fp, "Thread %i, %ld, %f, %f, %f, %f, %ld,\n", resp.m_thread, resp.responseCode, resp.lookupTime, resp.connectTime, resp.dataStartTime,
 						resp.totalTime, resp.contentSize);
 			
-		}
-		
+		}		
 	}	
 	
 	fclose(fp);

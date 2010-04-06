@@ -6,6 +6,8 @@
 #include "sitemon.h"
 #include "http_server.h"
 
+#include "utils/socket.h"
+
 static void printUsage();
 
 int main(int argc, char *const argv[])
@@ -77,7 +79,7 @@ int main(int argc, char *const argv[])
 			}
 		}
 	}
-	
+
 	Config configFile;
 	configFile.loadConfigFile();
 	
@@ -86,6 +88,8 @@ int main(int argc, char *const argv[])
 	if (runWeb)
 	{
 		std::cout << "Starting web server...\n";
+
+		Socket::initWinsocks();
 		
 		std::string webContentPath = configFile.getWebContentPath();
 		std::string dbPath = configFile.getDBPath();
@@ -94,6 +98,8 @@ int main(int argc, char *const argv[])
 		server.start();
 		
 		curl_global_cleanup();
+
+		Socket::cleanupWinsocks();
 		
 		return 0;
 	}

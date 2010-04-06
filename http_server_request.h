@@ -2,6 +2,10 @@
 #ifndef HTTP_SERVER_REQUEST_H
 #define HTTP_SERVER_REQUEST_H
 
+#ifdef _MSC_VER
+#pragma warning (disable : 4786)
+#endif
+
 #include <string>
 #include <map>
 #include <vector>

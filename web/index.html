@@ -9,8 +9,12 @@ function performTest()
 	if (window.XMLHttpRequest)
 	{
 		var url = document.getElementById('url').value;
-		xmlhttp = new XMLHttpRequest();
 		fullGETURL = "/inline_simple" + "?url=" + url;
+		if (document.getElementById('accept_compressed').checked)
+		{
+			fullGETURL = fullGETURL + "&accept_compressed=1";
+		}
+		xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = resultsCallback;
 		xmlhttp.open("GET", fullGETURL, true);
 		xmlhttp.send(null);
@@ -36,6 +40,8 @@ Run a single page request test.
 <form action="javascript:performTest();">
 <p><label for="url"><small>URL:</small></label>
 <input type="text" id="url" value="http://" size="40"/></p>
+<p><label for="accept_compressed"><small>Accept compressed content</small></label>
+<input type="checkbox" id="accept_compressed" checked/></p>
 <p><input type='submit' value='Run Test'/></p>
 <div id="results" class="results">
 </div>

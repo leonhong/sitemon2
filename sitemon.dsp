@@ -42,7 +42,8 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Yu"stdafx.h" /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "CURL_STATICLIB" /Yu"stdafx.h" /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "CURL_STATICLIB" /FD /c
+# SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ssleay32.lib libeay32.lib libs/libcurl.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ssleay32.lib libeay32.lib libs\libcurld.lib ws2_32.lib libs\zlib.lib /nologo /subsystem:console /machine:I386
 
 !ELSEIF  "$(CFG)" == "sitemon - Win32 Debug"
 
@@ -67,7 +68,6 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Yu"stdafx.h" /FD /GZ /c
 # ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "CURL_STATICLIB" /FR /FD /GZ /c
-# SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ssleay32.lib libeay32.lib libs\libcurld.lib ws2_32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ssleay32.lib libeay32.lib libs\libcurld.lib ws2_32.lib libs\zlibd.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
 !ENDIF 
 
@@ -92,6 +92,22 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\utils\mutex.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\utils\socket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\utils\sqlite3.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\utils\sqlite_db.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\utils\sqlite_query.cpp
 # End Source File
 # Begin Source File
 
@@ -112,6 +128,14 @@ SOURCE=.\utils\tinyxmlparser.cpp
 # End Group
 # Begin Source File
 
+SOURCE=.\config.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\hit_load_request_thread.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\http_engine.cpp
 # End Source File
 # Begin Source File
@@ -124,19 +148,39 @@ SOURCE=.\http_response.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\http_server.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_db_helpers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_html_formatters.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_request.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_request_thread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_responses.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\request_thread.cpp
+SOURCE=.\results_storage.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\script.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\script_results.cpp
 # End Source File
 # Begin Source File
 
@@ -155,6 +199,22 @@ SOURCE=.\utils\mutex.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\utils\socket.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\utils\sqlite3.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\utils\sqlite_db.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\utils\sqlite_query.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\utils\thread.h
 # End Source File
 # Begin Source File
@@ -162,6 +222,14 @@ SOURCE=.\utils\thread.h
 SOURCE=.\utils\tinyxml.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\config.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\hit_load_request_thread.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\http_engine.h
@@ -176,15 +244,35 @@ SOURCE=.\http_response.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\request_thread.h
+SOURCE=.\http_server.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_db_helpers.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_html_formatters.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_request.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_request_thread.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\http_server_responses.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\results_storage.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\script.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\script_results.h
 # End Source File
 # Begin Source File
 

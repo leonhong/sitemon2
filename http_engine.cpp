@@ -138,15 +138,43 @@ bool HTTPEngine::performRequest(HTTPRequest &request, HTTPResponse &response, bo
 		return false;
 	
 	curl_easy_setopt(m_handle, CURLOPT_NOSIGNAL, 1L);
+
+	response.requestedURL = request.getUrl();
 	
 	int res = curl_easy_perform(m_handle);
 	if (res != 0)
+	{
+		switch (res)
+		{
+		case CURLE_COULDNT_RESOLVE_HOST:
+			response.errorCode = HTTP_COULDNT_RESOLVE_HOST;
+			response.errorString = "Couldn't resolve host.";
+			break;
+		case CURLE_COULDNT_CONNECT:
+			response.errorCode = HTTP_COULDNT_CONNECT;
+			response.errorString = "Couldn't connect to host.";
+			break;
+		case CURLE_OPERATION_TIMEOUTED:
+			response.errorCode = HTTP_TIMEOUT;
+			response.errorString = "Connection timed out.";
+			break;
+		case CURLE_RECV_ERROR:
+			response.errorCode = HTTP_RECV_ERROR;
+			response.errorString = "Error receiving data.";
+			break;
+		default:
+			response.errorCode = HTTP_UNKNOWN_ERROR;
+			response.errorString = "Unknown error.";
+			break;
+		}
+
+		curl_easy_cleanup(m_handle);
+
 		return false;
-	
-	response.requestedURL = request.getUrl();
+	}
 	
 	extractResponseFromCURLHandle(m_handle, response);
-	
+		
 	curl_easy_cleanup(m_handle);
 
 	return true;

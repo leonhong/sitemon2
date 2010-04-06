@@ -12,6 +12,7 @@
 	<th scope="col">Run ID</th>
 	<th scope="col">Time</th>
 	<th scope="col">URL</th>
+	<th scope="col">Result</th>
 	<th scope="col">Return Code</th>
 	<th scope="col">Total</th>
 	<th scope="col">Download Size</th>

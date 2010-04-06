@@ -19,6 +19,8 @@ bool performSingleRequest(HTTPRequest &request, bool outputHeader)
 	}
 	else
 	{
+		std::cout << response.errorString << "\n";
+
 		return false;
 	}
 
@@ -39,6 +41,10 @@ bool performScriptRequest(Script &script)
 		if (engine.performRequest(request, response))
 		{
 			outputResponse(response);
+		}
+		else
+		{
+			std::cout << response.errorString << "\n";
 		}
 	}
 
@@ -71,14 +77,15 @@ bool performConcurrentScriptRequest(Script &script, int threads, const std::stri
 	
 	printf("Created %i threads...\n", threadCount);
 	
-	for (std::vector<HitLoadRequestThread *>::iterator it = aThreads.begin(); it != aThreads.end(); ++it)
+	std::vector<HitLoadRequestThread *>::iterator it = aThreads.begin();
+	for (; it != aThreads.end(); ++it)
 	{
 		(*it)->start();
 	}
 	
 	ConcurrentHitResults results;
 
-	for (std::vector<HitLoadRequestThread *>::iterator it = aThreads.begin(); it != aThreads.end(); ++it)
+	for (it = aThreads.begin(); it != aThreads.end(); ++it)
 	{
 		(*it)->waitForCompletion();
 		results.addResults((*it)->getResponses());

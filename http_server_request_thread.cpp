@@ -36,22 +36,28 @@ void HTTPServerRequestThread::run()
 		if (request.getPath() == "/inline_simple" && request.hasParams())
 		{
 			std::string url = request.getParam("url");
+			std::string acceptCompressed = request.getParam("accept_compressed");
 			
 			std::string content;
 			
 			HTTPEngine engine;
 			HTTPRequest httpTestRequest(url);
+			if (acceptCompressed == "1")
+			{
+				httpTestRequest.setAcceptCompressed(true);
+			}
 			HTTPResponse httpTestResponse;
+
 			if (engine.performRequest(httpTestRequest, httpTestResponse))
 			{
 				formatResponseToHTMLDL(httpTestResponse, content);
-				
-				addResponseToSingleTestHistoryTable(m_pMainDB, httpTestResponse);
 			}
 			else
 			{
-				content += "Couldn't perform test.<br>\n";				
+				content += "Couldn't perform test: " + httpTestResponse.errorString + "<br>\n";
 			}
+
+			addResponseToSingleTestHistoryTable(m_pMainDB, httpTestResponse);
 			
 			HTTPServerResponse resp(200, content);
 			response = resp.responseString();

@@ -2,8 +2,8 @@
 #ifndef HTTP_SERVER_REQUEST_THREAD_H
 #define HTTP_SERVER_REQUEST_THREAD_H
 
-#include "utils/thread.h"
 #include "utils/Socket.h"
+#include "utils/thread.h"
 #include "utils/sqlite_query.h"
 
 class HTTPServerRequestThread: public Thread
