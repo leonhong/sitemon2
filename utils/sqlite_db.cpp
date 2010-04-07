@@ -34,7 +34,7 @@ SQLiteDB::~SQLiteDB()
 	}
 }
 
-DBConn *SQLiteDB::getDBConnection()
+DBConn *SQLiteDB::getDBConnection(bool write)
 {
 	if (m_useMutex)
 	{
@@ -43,7 +43,7 @@ DBConn *SQLiteDB::getDBConnection()
 	
 	DBConn * pConn = NULL;
 	
-	std::list<DBConn *>::iterator it = m_aAvailableConnections.begin();
+/*	std::list<DBConn *>::iterator it = m_aAvailableConnections.begin();
 	for (; it != m_aAvailableConnections.end(); ++it)
 	{
 		if (!(*it)->m_inUse)
@@ -52,7 +52,10 @@ DBConn *SQLiteDB::getDBConnection()
 			break;
 		}
 	}
+*/
 	
+	// need to do write flag in above
+
 	if (pConn)
 	{
 		pConn->m_inUse = true;
@@ -70,8 +73,15 @@ DBConn *SQLiteDB::getDBConnection()
 			}
 			return NULL;
 		}
+
+		int flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_CREATE;
+
+		if (write)
+		{
+			flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+		}
 		
-		int rc = sqlite3_open(m_path.c_str(), &pConn->m_pDB);
+		int rc = sqlite3_open_v2(m_path.c_str(), &pConn->m_pDB, flags, NULL);
 		if (rc)
 		{
 			printf("Can't open specified database file: %s\n", sqlite3_errmsg(pConn->m_pDB));
@@ -85,7 +95,7 @@ DBConn *SQLiteDB::getDBConnection()
 		}
 		pConn->m_inUse = true;
 		
-		m_aAvailableConnections.push_back(pConn);
+//		m_aAvailableConnections.push_back(pConn);
 	}
 	
 	if (m_useMutex)
@@ -96,15 +106,30 @@ DBConn *SQLiteDB::getDBConnection()
 	return pConn;
 }
 
-void SQLiteDB::releaseDBConnection(DBConn *pConn)
+void SQLiteDB::releaseDBConnection(DBConn *pConn, bool cache)
 {
 	if (m_useMutex)
 	{
 		m_mutex.lock();
 	}
-	
-	if (pConn)
+
+	if (!cache)
 	{
-		pConn->m_inUse = false;
+		sqlite3_close(pConn->m_pDB);
+		delete pConn;
+
+		// need to remove the item from the list
+	}
+	else
+	{
+		if (pConn)
+		{
+			pConn->m_inUse = false;
+		}
+	}
+
+	if (m_useMutex)
+	{
+		m_mutex.unlock();
 	}
 }

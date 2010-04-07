@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>Sitemon Web Interface - Add Monitor test</title>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+</head>
+<body>
+<ul id="sitenav">
+<li><a href="/">Home</a></li>
+<li><a href="/history">History</a></li>
+<li><a href="/monitoring">Monitoring</a></li>
+<li><a href="/load_testing">Load Testing</a></li>
+</ul>
+<br><br>
+
+<form action="add_monitor_test" method="post">
+<p><label for="description"><small>Description:</small></label>
+<input type="text" name="description" value="" size="40"/></p>
+<p><label for="url"><small>URL:</small></label>
+<input type="text" name="url" value="http://" size="50"/></p>
+<p><label for="interval"><small>Interval</small></label>
+<select name="interval">
+<option>1</option>
+<option>5</option>
+<option selected="yes">10</option>
+<option>15</option>
+<option>20</option>
+<option>30</option>
+</select></p>
+
+<p><label for="referer"><small>Referer:</small></label>
+<input type="text" name="referer" value="" size="50"/></p>
+<p><label for="expected_phrase"><small>Expected phrase:</small></label>
+<input type="text" name="expected_phrase" value="" size="50"/></p>
+
+<p><label for="referer"><small>Accept compressed content:</small></label>
+<input type="checkbox" name="accept_compressed" checked/></p>
+
+<p><input type='submit' value='Add'/></p>
+<div id="results" class="results">
+</div>
+</form>
+</body>
+</html>

@@ -12,6 +12,7 @@
 HTTPServerRequestThread::HTTPServerRequestThread(Socket *socket, const std::string &webContentPath, SQLiteDB *pMainDB)
 	: m_pSocket(socket), m_webContentPath(webContentPath), m_pMainDB(pMainDB)
 {
+
 }
 
 HTTPServerRequestThread::~HTTPServerRequestThread()
@@ -54,7 +55,7 @@ void HTTPServerRequestThread::run()
 			}
 			else
 			{
-				content += "Couldn't perform test: " + httpTestResponse.errorString + "<br>\n";
+				content += "Couldn't perform test: " + httpTestResponse.errorString + "<br>\n";				
 			}
 
 			addResponseToSingleTestHistoryTable(m_pMainDB, httpTestResponse);
@@ -78,6 +79,48 @@ void HTTPServerRequestThread::run()
 			HTTPServerTemplateFileResponse resp(filePath, dataContent);
 			response = resp.responseString();
 		}
+		else if (request.getPath() == "/monitoring")
+		{
+			std::string filePath = m_webContentPath + "monitoring.tplt";
+			
+			std::string dataContent;
+			getSingleScheduledTestsList(m_pMainDB, dataContent);
+			
+			HTTPServerTemplateFileResponse resp(filePath, dataContent);
+			response = resp.responseString();
+		}
+		else if (request.getPath() == "/add_monitor_test" && request.isPost())
+		{
+			std::string thisResponse;
+			if (addSingleScheduledTest(m_pMainDB, request, thisResponse))
+			{
+				// okay
+
+				HTTPServerRedirectResponse resp("/monitoring");
+				response = resp.responseString();
+			}
+			else
+			{
+				HTTPServerResponse resp(500, thisResponse);
+				response = resp.responseString();
+			}
+		}
+		else if (request.getPath() == "/view_monitortest")
+		{
+			std::string filePath = m_webContentPath + "view_monitortest.tplt";
+
+			long testID = 0;
+			std::string strTestID = request.getParam("testid");
+			if (!strTestID.empty())
+				testID = atoi(strTestID.c_str());
+			
+			std::string description;			
+			std::string dataContent;
+			getSingleScheduledTestResultsList(m_pMainDB, testID, description, dataContent);
+			
+			HTTPServerTemplateFileResponse2 resp(filePath, description, dataContent);
+			response = resp.responseString();
+		}		
 		else if (request.getPath() == "/single_details" && request.hasParams())
 		{
 			long runID = atoi(request.getParam("runid").c_str());

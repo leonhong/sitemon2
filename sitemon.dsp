@@ -180,6 +180,14 @@ SOURCE=.\results_storage.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\scheduler.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\scheduler_db_helpers.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\script.cpp
 # End Source File
 # Begin Source File
@@ -269,6 +277,14 @@ SOURCE=.\http_server_responses.h
 # Begin Source File
 
 SOURCE=.\results_storage.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scheduler.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scheduler_db_helpers.h
 # End Source File
 # Begin Source File
 

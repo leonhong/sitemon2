@@ -18,6 +18,17 @@ protected:
 	std::string m_text;
 };
 
+class HTTPServerRedirectResponse
+{
+public:
+	HTTPServerRedirectResponse(const std::string &url = "");
+	
+	std::string responseString();
+	
+protected:
+	std::string m_url;
+};
+
 class HTTPServerFileResponse
 {
 public:
@@ -40,6 +51,19 @@ public:
 protected:
 	std::string m_path;
 	std::string &m_content;
+};
+
+class HTTPServerTemplateFileResponse2
+{
+public:
+	HTTPServerTemplateFileResponse2(const std::string &path, std::string &content1, std::string &content2);
+	
+	std::string responseString();
+	
+protected:
+	std::string m_path;
+	std::string &m_content1;
+	std::string &m_content2;
 };
 
 #endif

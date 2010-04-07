@@ -19,6 +19,15 @@ Thread::~Thread()
 	stop();
 }
 
+void Thread::sleep(int seconds)
+{
+#ifndef _MSC_VER
+	::sleep(seconds);
+#else
+	::Sleep(seconds * 1000);
+#endif
+}
+
 #ifdef _MSC_VER
 unsigned long __stdcall Thread::threadProc(void *ptr)
 #else
@@ -71,13 +80,29 @@ bool Thread::start()
 }
 
 // TODO: maybe add support for killing the thread while it's running?
-void Thread::stop()
+void Thread::stop(bool kill)
 {
+	if (m_thread)
+	{
 #ifdef _MSC_VER
-	CloseHandle(m_thread);
+		CloseHandle(m_thread);
+		
+		if (kill)
+		{
+			unsigned long exitCode = 0;
+			GetExitCodeThread(m_thread, &exitCode);
+			
+			if (exitCode == STILL_ACTIVE)
+			{
+				TerminateThread(m_thread, -1);
+			}			
+		}
 #else
 
 #endif
+	}
+	
+	m_thread = NULL;
 
 	setRunning(false);
 }

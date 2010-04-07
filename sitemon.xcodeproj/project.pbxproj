@@ -28,6 +28,10 @@
 		D0CA7D20116A1C7F007039D5 /* http_server_html_formatters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0CA7D1F116A1C7F007039D5 /* http_server_html_formatters.cpp */; };
 		D0D19507116655180040E1B7 /* http_server_request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0D19506116655180040E1B7 /* http_server_request.cpp */; };
 		D0E649B011660B680024C4AC /* results_storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0E649AF11660B680024C4AC /* results_storage.cpp */; };
+		D0EC0781116BAEF700B2D72F /* scheduler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0EC0780116BAEF700B2D72F /* scheduler.cpp */; };
+		D0EC0804116BCF4900B2D72F /* scheduler_db_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0EC0803116BCF4900B2D72F /* scheduler_db_helpers.cpp */; };
+		D0F36BEF116CFB3100A46DBA /* scheduler_test_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F36BED116CFB3100A46DBA /* scheduler_test_thread.cpp */; };
+		D0F36C35116D058100A46DBA /* scheduled_results_saver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F36C34116D058100A46DBA /* scheduled_results_saver.cpp */; };
 		D0F382C71169001D007765A1 /* sqlite_db.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F382C01169001D007765A1 /* sqlite_db.cpp */; };
 		D0F382C81169001D007765A1 /* sqlite_query.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F382C21169001D007765A1 /* sqlite_query.cpp */; };
 		D0F382C91169001D007765A1 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = D0F382C41169001D007765A1 /* sqlite3.c */; };
@@ -87,6 +91,14 @@
 		D0D19506116655180040E1B7 /* http_server_request.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_server_request.cpp; sourceTree = "<group>"; };
 		D0E649AE11660B680024C4AC /* results_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = results_storage.h; sourceTree = "<group>"; };
 		D0E649AF11660B680024C4AC /* results_storage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = results_storage.cpp; sourceTree = "<group>"; };
+		D0EC077F116BAEF700B2D72F /* scheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scheduler.h; sourceTree = "<group>"; };
+		D0EC0780116BAEF700B2D72F /* scheduler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scheduler.cpp; sourceTree = "<group>"; };
+		D0EC0802116BCF4900B2D72F /* scheduler_db_helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scheduler_db_helpers.h; sourceTree = "<group>"; };
+		D0EC0803116BCF4900B2D72F /* scheduler_db_helpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scheduler_db_helpers.cpp; sourceTree = "<group>"; };
+		D0F36BED116CFB3100A46DBA /* scheduler_test_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scheduler_test_thread.cpp; sourceTree = "<group>"; };
+		D0F36BEE116CFB3100A46DBA /* scheduler_test_thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scheduler_test_thread.h; sourceTree = "<group>"; };
+		D0F36C33116D058100A46DBA /* scheduled_results_saver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scheduled_results_saver.h; sourceTree = "<group>"; };
+		D0F36C34116D058100A46DBA /* scheduled_results_saver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scheduled_results_saver.cpp; sourceTree = "<group>"; };
 		D0F382C01169001D007765A1 /* sqlite_db.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite_db.cpp; sourceTree = "<group>"; };
 		D0F382C11169001D007765A1 /* sqlite_db.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite_db.h; sourceTree = "<group>"; };
 		D0F382C21169001D007765A1 /* sqlite_query.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite_query.cpp; sourceTree = "<group>"; };
@@ -111,6 +123,8 @@
 		08FB7794FE84155DC02AAC07 /* sitemon */ = {
 			isa = PBXGroup;
 			children = (
+				D0F36BED116CFB3100A46DBA /* scheduler_test_thread.cpp */,
+				D0F36BEE116CFB3100A46DBA /* scheduler_test_thread.h */,
 				D0F38331116907C8007765A1 /* http_server_db_helpers.h */,
 				D0F38332116907C8007765A1 /* http_server_db_helpers.cpp */,
 				D01AFA2611689032005FD626 /* config.h */,
@@ -143,6 +157,12 @@
 				D0D19506116655180040E1B7 /* http_server_request.cpp */,
 				D0CA7D1E116A1C7F007039D5 /* http_server_html_formatters.h */,
 				D0CA7D1F116A1C7F007039D5 /* http_server_html_formatters.cpp */,
+				D0EC077F116BAEF700B2D72F /* scheduler.h */,
+				D0EC0780116BAEF700B2D72F /* scheduler.cpp */,
+				D0EC0802116BCF4900B2D72F /* scheduler_db_helpers.h */,
+				D0EC0803116BCF4900B2D72F /* scheduler_db_helpers.cpp */,
+				D0F36C33116D058100A46DBA /* scheduled_results_saver.h */,
+				D0F36C34116D058100A46DBA /* scheduled_results_saver.cpp */,
 			);
 			name = sitemon;
 			sourceTree = "<group>";
@@ -261,6 +281,10 @@
 				D0F382C91169001D007765A1 /* sqlite3.c in Sources */,
 				D0F38333116907C8007765A1 /* http_server_db_helpers.cpp in Sources */,
 				D0CA7D20116A1C7F007039D5 /* http_server_html_formatters.cpp in Sources */,
+				D0EC0781116BAEF700B2D72F /* scheduler.cpp in Sources */,
+				D0EC0804116BCF4900B2D72F /* scheduler_db_helpers.cpp in Sources */,
+				D0F36BEF116CFB3100A46DBA /* scheduler_test_thread.cpp in Sources */,
+				D0F36C35116D058100A46DBA /* scheduled_results_saver.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

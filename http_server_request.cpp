@@ -31,7 +31,7 @@ bool HTTPServerRequest::parse()
 		m_post = true;
 	}
 	
-	int pathStart = 4;
+	int pathStart = m_post ? 5 : 4;
 	
 	int pathEnd = line.rfind(" "); // should be the space before the HTTP version
 	
@@ -111,6 +111,14 @@ void HTTPServerRequest::addParams(const std::string &params)
 				std::string strChar(szTemp);
 				
 				value.replace(nHex, 3, strChar);
+			}
+
+			// + to spaces
+
+			int nSpace = 0;
+			while ((nSpace = value.find("+", nSpace)) != -1)
+			{
+				value.replace(nSpace, 1, " ");
 			}
 			
 			if (!name.empty())

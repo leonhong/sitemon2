@@ -9,13 +9,13 @@
 
 #include "sqlite_query.h"
 
-SQLiteQuery::SQLiteQuery(SQLiteDB &db) : m_db(db), m_pConn(db.getDBConnection()), m_result(NULL), m_hasRow(false),
+SQLiteQuery::SQLiteQuery(SQLiteDB &db, bool write) : m_db(db), m_pConn(db.getDBConnection(write)), m_result(NULL), m_hasRow(false),
 									m_thisColumn(0), m_cachedRC(0), m_validCachedRC(false), m_rowCount(0), m_colCount(0)
 {
 	
 }
 
-SQLiteQuery::SQLiteQuery(SQLiteDB &db, const std::string &sql) : m_db(db), m_pConn(db.getDBConnection()), m_result(NULL), m_hasRow(false),
+SQLiteQuery::SQLiteQuery(SQLiteDB &db, const std::string &sql, bool write) : m_db(db), m_pConn(db.getDBConnection(write)), m_result(NULL), m_hasRow(false),
 									m_thisColumn(0), m_cachedRC(0), m_validCachedRC(false), m_rowCount(0), m_colCount(0)
 {
 	execute(sql);
@@ -31,48 +31,95 @@ SQLiteQuery::~SQLiteQuery()
 	}
 }
 
-bool SQLiteQuery::execute(const std::string &sql)
+bool SQLiteQuery::execute(const std::string &sql, bool retry)
 {
 	m_lastQuery = sql;
 	
 	if (m_pConn && m_result)
 	{
-		// already got an active result
-	}
-	else
-	{
-		const char *s = NULL;
-		int rc = sqlite3_prepare(m_pConn->m_pDB, sql.c_str(), sql.size(), &m_result, &s);
-		if (rc != SQLITE_OK)
-		{
-			printf("SQLiteQuery::execute prepare query failed.\n");
-			return false;
-		}
-		
-		if (!m_result)
-		{
-			printf("SQLiteQuery::execute query failed.\n");
-			return false;
-		}
-		
-		rc = sqlite3_step(m_result);
 		sqlite3_finalize(m_result);
 		m_result = NULL;
-		
-		switch (rc)
+	}
+
+	{
+		if (!retry)
 		{
-			case SQLITE_BUSY:
-				printf("SQLiteQuery::execute db busy.\n");
+			const char *s = NULL;
+			int rc = sqlite3_prepare(m_pConn->m_pDB, sql.c_str(), sql.size(), &m_result, &s);
+			if (rc != SQLITE_OK)
+			{
+				printf("SQLiteQuery::execute prepare query failed.\n");
 				return false;
-			case SQLITE_DONE:
-			case SQLITE_ROW:
-				return true;
-			case SQLITE_ERROR:
-				printf("SQLiteQuery::execute error: %s.\n", sqlite3_errmsg(m_pConn->m_pDB));
+			}
+			
+			if (!m_result)
+			{
+				printf("SQLiteQuery::execute query failed.\n");
 				return false;
-			case SQLITE_MISUSE:
-				printf("SQLiteQuery::execute db misuse.\n");
-				return false;
+			}
+			
+			rc = sqlite3_step(m_result);
+			sqlite3_finalize(m_result);
+			m_result = NULL;
+			
+			switch (rc)
+			{
+				case SQLITE_BUSY:
+					printf("SQLiteQuery::execute db busy.\n");
+					return false;
+				case SQLITE_DONE:
+				case SQLITE_ROW:
+					return true;
+				case SQLITE_ERROR:
+					printf("SQLiteQuery::execute error: %s.\n", sqlite3_errmsg(m_pConn->m_pDB));
+					return false;
+				case SQLITE_MISUSE:
+					printf("SQLiteQuery::execute db misuse.\n");
+					return false;
+			}
+		}
+		else
+		{
+			int count = 0;
+
+			while (count++ < 5)
+			{
+
+				const char *s = NULL;
+				int rc = sqlite3_prepare(m_pConn->m_pDB, sql.c_str(), sql.size(), &m_result, &s);
+				if (rc != SQLITE_OK)
+				{
+					printf("SQLiteQuery::execute prepare query failed.\n");
+					return false;
+				}
+				
+				if (!m_result)
+				{
+					printf("SQLiteQuery::execute query failed.\n");
+					return false;
+				}
+				
+				rc = sqlite3_step(m_result);
+				sqlite3_finalize(m_result);
+				m_result = NULL;
+				
+				switch (rc)
+				{
+					case SQLITE_BUSY:
+						printf("SQLiteQuery::execute db busy.\n");
+						break;
+//						return false;
+					case SQLITE_DONE:
+					case SQLITE_ROW:
+						return true;
+					case SQLITE_ERROR:
+						printf("SQLiteQuery::execute error: %s.\n", sqlite3_errmsg(m_pConn->m_pDB));
+						return false;
+					case SQLITE_MISUSE:
+						printf("SQLiteQuery::execute db misuse.\n");
+						return false;
+				}
+			}
 		}
 	}
 			

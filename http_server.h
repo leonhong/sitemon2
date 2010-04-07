@@ -11,18 +11,19 @@
 #define HTTP_SERVER_H
 
 #include <string>
+#include "utils/sqlite_db.h"
 
 class HTTPServer
 {
 public:
-	HTTPServer(int port = 8080, const std::string &webContentPath = "", const std::string &dbPath = "");
+	HTTPServer(const std::string &webContentPath, SQLiteDB *pDB, int port = 8080);
 	
 	bool start();
 	
 protected:
 	int m_port;
 	std::string m_webContentPath;
-	std::string m_dbPath;
+	SQLiteDB *m_pMainDB;
 
 };
 

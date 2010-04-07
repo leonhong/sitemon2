@@ -13,11 +13,11 @@
 class SQLiteQuery
 {
 public:
-	SQLiteQuery(SQLiteDB &db);
-	SQLiteQuery(SQLiteDB &db, const std::string &sql);
+	SQLiteQuery(SQLiteDB &db, bool write = false);
+	SQLiteQuery(SQLiteDB &db, const std::string &sql, bool write = false);
 	~SQLiteQuery();
 	
-	bool execute(const std::string &sql);
+	bool execute(const std::string &sql, bool retry = false);
 	
 	sqlite3_stmt *getResult(const std::string &sql);
 	void freeResults();

@@ -5,8 +5,8 @@
 #include "config.h"
 #include "sitemon.h"
 #include "http_server.h"
-
 #include "utils/socket.h"
+#include "scheduler.h"
 
 static void printUsage();
 
@@ -81,25 +81,44 @@ int main(int argc, char *const argv[])
 	}
 
 	Config configFile;
-	configFile.loadConfigFile();
+#ifndef _MSC_VER
+	configFile.loadConfigFile("/Users/peter/sm_config.xml");
+#else
+	configFile.loadConfigFile("E:\\sm_config.xml");
+#endif
+//	configFile.loadConfigFile();
 	
 	curl_global_init(CURL_GLOBAL_ALL);
 	
 	if (runWeb)
 	{
-		std::cout << "Starting web server...\n";
-
-		Socket::initWinsocks();
-		
 		std::string webContentPath = configFile.getWebContentPath();
 		std::string dbPath = configFile.getDBPath();
+
+		SQLiteDB *pMainDB = NULL;
+	
+		if (!dbPath.empty())
+		{
+			pMainDB = new SQLiteDB(dbPath);
+		}
 		
-		HTTPServer server(8080, webContentPath, dbPath);
+		Scheduler schedulerThread(pMainDB);
+		schedulerThread.start();
+		//
+		std::cout << "Starting web server on http://localhost:" << 8080 << "/\n";
+
+		Socket::initWinsocks();		
+		
+		HTTPServer server(webContentPath, pMainDB, 8080);
+		// keep in mind this halts execution, by design
 		server.start();
 		
 		curl_global_cleanup();
 
 		Socket::cleanupWinsocks();
+
+		if (pMainDB)
+			delete pMainDB;
 		
 		return 0;
 	}

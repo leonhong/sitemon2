@@ -3,6 +3,7 @@
 
 #ifndef _MSC_VER
 #include <pthread.h>
+#include <unistd.h>
 #else
 #include <windows.h>
 #endif
@@ -15,8 +16,10 @@ public:
 	Thread();
 	virtual ~Thread();
 
+	static void sleep(int seconds);
+
 	bool start();
-	void stop();
+	void stop(bool kill = false);
 	void waitForCompletion();
 	void setRunning(bool running);
 
@@ -25,7 +28,7 @@ public:
 
 	virtual void run() = 0;
 
-public:
+protected:
 #ifdef _MSC_VER
 	static unsigned long __stdcall threadProc(void *ptr);
 #else

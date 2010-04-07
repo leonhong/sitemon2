@@ -32,8 +32,8 @@ public:
 	SQLiteDB(Mutex &mutex, const std::string &path);
 	~SQLiteDB();
 	
-	DBConn *getDBConnection();
-	void releaseDBConnection(DBConn *pConn);
+	DBConn *getDBConnection(bool write = false);
+	void releaseDBConnection(DBConn *pConn, bool cache = false);
 	
 protected:
 	SQLiteDB(const SQLiteDB &db) : m_mutex(m_mutex) { }

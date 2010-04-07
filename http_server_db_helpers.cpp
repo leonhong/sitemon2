@@ -24,10 +24,10 @@ bool createSingleTestHistoryTable(SQLiteDB *pDB)
 	
 	if (pDB)
 	{
-		SQLiteQuery q(*pDB);
+		SQLiteQuery q(*pDB, true);
 		
 		return q.execute(sql);		
-	}	
+	}
 	
 	return false;
 }
@@ -46,7 +46,7 @@ bool addResponseToSingleTestHistoryTable(SQLiteDB *pDB, HTTPResponse &response)
 	
 	sql.append(szTemp);
 	
-	SQLiteQuery q(*pDB);
+	SQLiteQuery q(*pDB, true);
 	
 	return q.execute(sql);
 }
@@ -125,8 +125,6 @@ bool formatDBSingleTestResponseToHTMLDL(SQLiteDB *pDB, long rowID, std::string &
 		char szTemp[2048];
 		memset(szTemp, 0, 2048);
 
-		char szResult[6];
-		
 		std::string format = "<dl>\n";
 		addStringToDL(format, "Time");
 		addStringToDL(format, "Requested URL");
@@ -155,6 +153,7 @@ bool formatDBSingleTestResponseToHTMLDL(SQLiteDB *pDB, long rowID, std::string &
 		long downloadSize = q.getLong();
 		long contentSize = q.getLong();
 
+		char szResult[6];
 		memset(szResult, 0, 6);
 		if (errorCode == 0)
 		{
@@ -178,4 +177,156 @@ bool formatDBSingleTestResponseToHTMLDL(SQLiteDB *pDB, long rowID, std::string &
 	}
 	
 	return false;
+}
+
+bool getSingleScheduledTestsList(SQLiteDB *pDB, std::string &output)
+{
+	if (!pDB)
+		return false;
+	
+	std::string sql = "select rowid, enabled, description, url, interval, accept_compressed from scheduled_single_tests limit 40";// offset ";
+	
+/*	char szOffset[8];
+	memset(szOffset, 0, 8);
+	sprintf(szOffset, "%i", offset);
+	sql.append(szOffset);
+*/	
+	SQLiteQuery q(*pDB);
+	
+	output = "";
+	
+	char szTemp[2048];
+	
+	q.getResult(sql);
+	while (q.fetchNext())
+	{
+		memset(szTemp, 0, 2048);
+		
+		long testID = q.getLong();
+		long enabled = q.getLong();
+		std::string description = q.getString();
+		std::string url = q.getString();
+		long interval = q.getLong();
+		long acceptCompressed = q.getLong();
+
+		if (description.empty())
+			description = " ";
+
+		if (url.empty())
+			url = " ";
+		
+		std::string strEnabled = (enabled == 1) ? "YES" : "NO";
+
+		std::string strAcceptCompressed = (acceptCompressed == 1) ? "YES" : "NO";
+
+		sprintf(szTemp, "<tr>\n <td><a href=\"/edit_monitortest?testid=%ld\">%ld</a></td>\n <td>%s</td>\n <td>%s</td>\n <td>%s</td>\n <td>%ld</td>\n <td>%s</td>\n <td><a href=\"/view_monitortest?testid=%ld\">Results</a></td>\n</tr>\n",
+						testID, testID, strEnabled.c_str(), description.c_str(), url.c_str(), interval, strAcceptCompressed.c_str(), testID);
+		
+		output.append(szTemp);		
+	}
+	
+	return true;
+}
+
+bool addSingleScheduledTest(SQLiteDB *pDB, HTTPServerRequest &request, std::string &output)
+{
+	if (!pDB)
+	{
+		output = "No DB Connection";
+		return false;
+	}
+
+	std::string desc = request.getParam("description");
+	std::string url = request.getParam("url");
+	std::string interval = request.getParam("interval");
+	std::string referer = request.getParam("referer");
+	std::string expectedPhrase = request.getParam("expected_phrase");
+	long compressed = 0;
+	if (request.getParam("accept_compressed") == "on")
+		compressed = 1;
+
+	std::string sql = "insert into scheduled_single_tests values (1, ";
+	
+	char szTemp[1024];
+	memset(szTemp, 0, 1024);
+	sprintf(szTemp, "'%s', '%s', '%s', '%s', %s, %ld)", desc.c_str(), url.c_str(), referer.c_str(), expectedPhrase.c_str(), interval.c_str(), compressed);
+	
+	sql.append(szTemp);
+	
+	SQLiteQuery q(*pDB, true);
+	
+	return q.execute(sql);
+}
+
+bool getSingleScheduledTestResultsList(SQLiteDB *pDB, int testID, std::string &description, std::string &output)
+{
+	if (!pDB)
+	{
+		output = "No DB Connection";
+		return false;
+	}	
+	
+	char szTestID[12];
+	memset(szTestID, 0, 12);
+	sprintf(szTestID, "%ld", testID);
+	
+	{
+		std::string sql = "select description, url, interval from scheduled_single_tests where rowid = ";
+		sql.append(szTestID);
+		
+		SQLiteQuery q(*pDB);
+		
+		q.getResult(sql);
+		if (q.fetchNext())
+		{
+			std::string desc = q.getString();
+			std::string url = q.getString();
+			long interval = q.getLong();
+			
+			description = desc + " : " + url;			
+		}		
+	}
+	
+	std::string sql = "select datetime(run_time,'localtime') as rtime, error_code, response_code, lookup_time, connect_time, data_start_time, total_time, download_size, content_size from scheduled_single_test_results where test_id = ";
+	sql.append(szTestID);
+	
+	SQLiteQuery q(*pDB);
+
+	output = "";
+	
+	char szTemp[2048];
+	
+	q.getResult(sql);
+	while (q.fetchNext())
+	{
+		memset(szTemp, 0, 2048);
+
+		std::string time = q.getString();
+		long errorCode = q.getLong();
+		long responseCode = q.getLong();
+		float lookupTime = q.getDouble();
+		float connectTime = q.getDouble();
+		float dataStartTime = q.getDouble();
+		float totalTime = q.getDouble();
+		long downloadSize = q.getLong();
+		long contentSize = q.getLong();
+		
+		char szResult[6];
+		memset(szResult, 0, 6);
+		if (errorCode == 0)
+		{
+			strcat(szResult, "OK");
+		}
+		else
+		{
+			sprintf(szResult, "%ld", errorCode);
+		}
+
+		sprintf(szTemp, "<tr>\n <td>%s</td>\n <td>%s</td>\n <td>%ld</td>\n <td>%f</td>\n <td>%f</td>\n <td>%f</td>\n <td>%f</td>\n <td>%ld</td>\n <td>%ld</td>\n</tr>\n",
+						time.c_str(), szResult, responseCode, lookupTime, connectTime, dataStartTime, totalTime, downloadSize, contentSize);
+		
+		output.append(szTemp);		
+	}
+
+	return true;
 }

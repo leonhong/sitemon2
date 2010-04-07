@@ -7,6 +7,7 @@
  *
  */
 
+#include <ctime>
 #include "http_engine.h"
 #include <iostream>
 
@@ -140,6 +141,11 @@ bool HTTPEngine::performRequest(HTTPRequest &request, HTTPResponse &response, bo
 	curl_easy_setopt(m_handle, CURLOPT_NOSIGNAL, 1L);
 
 	response.requestedURL = request.getUrl();
+	
+	time_t timeNow;
+	time(&timeNow);
+	
+	response.timestamp = timeNow;
 	
 	int res = curl_easy_perform(m_handle);
 	if (res != 0)
