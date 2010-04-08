@@ -178,6 +178,21 @@ bool HTTPEngine::performRequest(HTTPRequest &request, HTTPResponse &response, bo
 
 		return false;
 	}
+
+	// handle expected phrase
+
+	if (allowDebug)
+	{
+		const std::string &expectedPhrase = request.getExpectedPhrase();
+
+		if (!expectedPhrase.empty())
+		{
+			if (response.content.find(expectedPhrase) == -1)
+			{
+				response.errorCode = HTTP_EXPECTED_PHRASE_NOT_FOUND;
+			}
+		}	
+	}
 	
 	extractResponseFromCURLHandle(m_handle, response);
 		

@@ -25,6 +25,7 @@
 		D0A36B06113ABB610069D596 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0A36B02113ABB610069D596 /* tinyxmlerror.cpp */; };
 		D0A36B07113ABB610069D596 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0A36B03113ABB610069D596 /* tinyxmlparser.cpp */; };
 		D0A36B2C113ABC0A0069D596 /* script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0A36B2B113ABC0A0069D596 /* script.cpp */; };
+		D0C46E03116E5CCD00C86DD4 /* http_form_generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0C46E01116E5CCD00C86DD4 /* http_form_generator.cpp */; };
 		D0CA7D20116A1C7F007039D5 /* http_server_html_formatters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0CA7D1F116A1C7F007039D5 /* http_server_html_formatters.cpp */; };
 		D0D19507116655180040E1B7 /* http_server_request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0D19506116655180040E1B7 /* http_server_request.cpp */; };
 		D0E649B011660B680024C4AC /* results_storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0E649AF11660B680024C4AC /* results_storage.cpp */; };
@@ -85,6 +86,8 @@
 		D0A36B03113ABB610069D596 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		D0A36B2A113ABC0A0069D596 /* script.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = script.h; sourceTree = "<group>"; };
 		D0A36B2B113ABC0A0069D596 /* script.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = script.cpp; sourceTree = "<group>"; };
+		D0C46E01116E5CCD00C86DD4 /* http_form_generator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_form_generator.cpp; sourceTree = "<group>"; };
+		D0C46E02116E5CCD00C86DD4 /* http_form_generator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_form_generator.h; sourceTree = "<group>"; };
 		D0CA7D1E116A1C7F007039D5 /* http_server_html_formatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_server_html_formatters.h; sourceTree = "<group>"; };
 		D0CA7D1F116A1C7F007039D5 /* http_server_html_formatters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_server_html_formatters.cpp; sourceTree = "<group>"; };
 		D0D19505116655180040E1B7 /* http_server_request.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_server_request.h; sourceTree = "<group>"; };
@@ -123,6 +126,8 @@
 		08FB7794FE84155DC02AAC07 /* sitemon */ = {
 			isa = PBXGroup;
 			children = (
+				D0C46E01116E5CCD00C86DD4 /* http_form_generator.cpp */,
+				D0C46E02116E5CCD00C86DD4 /* http_form_generator.h */,
 				D0F36BED116CFB3100A46DBA /* scheduler_test_thread.cpp */,
 				D0F36BEE116CFB3100A46DBA /* scheduler_test_thread.h */,
 				D0F38331116907C8007765A1 /* http_server_db_helpers.h */,
@@ -285,6 +290,7 @@
 				D0EC0804116BCF4900B2D72F /* scheduler_db_helpers.cpp in Sources */,
 				D0F36BEF116CFB3100A46DBA /* scheduler_test_thread.cpp in Sources */,
 				D0F36C35116D058100A46DBA /* scheduled_results_saver.cpp in Sources */,
+				D0C46E03116E5CCD00C86DD4 /* http_form_generator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +332,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;

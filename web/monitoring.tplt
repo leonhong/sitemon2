@@ -8,8 +8,9 @@
 <li><a href="/history">History</a></li>
 <li><a href="/monitoring">Monitoring</a></li>
 <li><a href="/load_testing">Load Testing</a></li>
+<li><a href="/help.html">Help</a></li>
 </ul>
-<br><a href="add_monitor_test.html">Add a test</a><br>
+<br><a href="add_monitor_test">Add a test</a><br>
 <table>
 <tr>
 	<th scope="col">Test ID</th>

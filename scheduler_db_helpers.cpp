@@ -1,3 +1,5 @@
+#include <map>
+#include <deque>
 
 #include "scheduler_db_helpers.h"
 
@@ -43,12 +45,67 @@ bool createScheduledSingleTestResultsTable(SQLiteDB *pDB)
 	return false;
 }
 
+// expects an empty vector
 bool getScheduledSingleTestsFromDB(SQLiteDB *pDB, std::vector<ScheduledItem> &items)
 {
 	if (!pDB)
 		return false;
 	
-	std::string sql = "select rowid, description, url, interval, accept_compressed from scheduled_single_tests where enabled = 1";
+	std::string sql = "select rowid, description, url, interval from scheduled_single_tests where enabled = 1";
+
+	SQLiteQuery q(*pDB);
+
+	time_t timeNow;
+	time(&timeNow);
+
+	long schedID = 0;
+	
+	q.getResult(sql);
+	while (q.fetchNext())
+	{
+		long testID = q.getLong();
+		std::string description = q.getString();
+		std::string url = q.getString();
+		long interval = q.getLong();
+
+		if (description.empty())
+			description = " ";
+
+		if (url.empty())
+			continue;
+
+		ScheduledItem newItem(schedID++, description, interval, timeNow);
+		newItem.setTestType(SINGLE_TEST);
+		newItem.setTestID(testID);
+
+		items.push_back(newItem);
+	}
+	
+	return true;
+}
+
+bool updateScheduledSingleTests(SQLiteDB *pDB, std::vector<ScheduledItem> &items)
+{
+	if (!pDB)
+		return false;
+
+	// not too efficient copying by val, but as we aren't designing this for more than 100 tests,
+	// should be okay - basically we want to try to keep tests that aren't being 
+	// added or removed and only update the timing interval as this will allow an interval
+	// of 5 to be changed to 10 and the second it gets fired off on to still be the same
+
+	std::map<unsigned long, unsigned long> aCurrentPositions; // current positions in the vector
+	std::vector<ScheduledItem> aNewTests;
+
+	std::vector<ScheduledItem>::iterator it = items.begin();
+	int pos = 0;
+	for (; it != items.end(); ++it, pos++)
+	{
+		ScheduledItem &item = *it;
+		aCurrentPositions[item.getTestID()] = pos;
+	}
+
+	std::string sql = "select rowid, enabled, description, url, interval from scheduled_single_tests";
 
 	SQLiteQuery q(*pDB);
 
@@ -59,10 +116,10 @@ bool getScheduledSingleTestsFromDB(SQLiteDB *pDB, std::vector<ScheduledItem> &it
 	while (q.fetchNext())
 	{
 		long testID = q.getLong();
+		long enabled = q.getLong();
 		std::string description = q.getString();
 		std::string url = q.getString();
 		long interval = q.getLong();
-//		long acceptCompressed = q.getLong();
 
 		if (description.empty())
 			description = " ";
@@ -70,12 +127,52 @@ bool getScheduledSingleTestsFromDB(SQLiteDB *pDB, std::vector<ScheduledItem> &it
 		if (url.empty())
 			continue;
 
-		ScheduledItem newItem(0, description, interval, timeNow);
-		newItem.setTestType(SINGLE_TEST);
-		newItem.setTestID(testID);
+		std::map<unsigned long, unsigned long>::iterator itFind = aCurrentPositions.find(testID);
 
-		items.push_back(newItem);
+		if (itFind != aCurrentPositions.end())
+		{
+			unsigned long currentPos = (*itFind).second;
+
+			ScheduledItem &currentItem = items.at(currentPos);
+
+			if (enabled == 0) // this is now disabled, so lets remove it
+			{
+				continue; // don't remove it from map so we can remove it from vector
+			}
+
+			currentItem.setInterval(interval);
+			currentItem.setDescription(description);
+
+			aCurrentPositions.erase(itFind);	
+		}
+		else // new one, so create it
+		{
+			ScheduledItem newItem(pos++, description, interval, timeNow);
+			newItem.setTestType(SINGLE_TEST);
+			newItem.setTestID(testID);
+
+			aNewTests.push_back(newItem);
+		}
 	}
-	
+
+	// now the remainder in the map can be deleted from the vector in reverse order (from the bottom)
+	std::deque<unsigned long> aTempPos;
+	std::map<unsigned long, unsigned long>::iterator itDel = aCurrentPositions.begin();
+	for (; itDel != aCurrentPositions.end(); ++itDel)
+	{
+		aTempPos.push_front((*itDel).second);
+	}
+
+	std::deque<unsigned long>::iterator itDel2 = aTempPos.begin();
+	for (; itDel2 != aTempPos.end(); ++itDel2)
+	{
+		unsigned long pos = *itDel2;
+
+		items.erase(items.begin() + pos);
+	}
+
+	// add the new items on the end
+	std::copy(aNewTests.begin(), aNewTests.end(), std::inserter(items, items.end()));
+
 	return true;
 }

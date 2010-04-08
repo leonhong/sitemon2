@@ -89,22 +89,67 @@ void HTTPServerRequestThread::run()
 			HTTPServerTemplateFileResponse resp(filePath, dataContent);
 			response = resp.responseString();
 		}
-		else if (request.getPath() == "/add_monitor_test" && request.isPost())
+		else if (request.getPath() == "/add_monitor_test")
 		{
-			std::string thisResponse;
-			if (addSingleScheduledTest(m_pMainDB, request, thisResponse))
+			if (request.isPost()) // actual submission
 			{
-				// okay
+				std::string thisResponse;
+				if (addSingleScheduledTest(m_pMainDB, request, thisResponse))
+				{
+					// okay
 
-				HTTPServerRedirectResponse resp("/monitoring");
-				response = resp.responseString();
+					HTTPServerRedirectResponse resp("/monitoring");
+					response = resp.responseString();
+				}
+				else
+				{
+					HTTPServerResponse resp(500, thisResponse);
+					response = resp.responseString();
+				}
 			}
-			else
+			else // otherwise, serve up the entry form
 			{
-				HTTPServerResponse resp(500, thisResponse);
+				std::string templatePath = m_webContentPath + "form.tplt";
+				std::string title = "Add Single Test";
+				std::string formContent;
+				generateAddSingleScheduledTestForm(formContent);
+				
+				HTTPServerTemplateFileResponse2 resp(templatePath, title, formContent);
 				response = resp.responseString();
 			}
 		}
+		else if (request.getPath() == "/edit_monitor_test")
+		{
+			if (request.isPost()) // actual submission
+			{
+				std::string thisResponse;
+				if (editSingleScheduledTest(m_pMainDB, request, thisResponse))
+				{
+					// okay
+					
+					HTTPServerRedirectResponse resp("/monitoring");
+					response = resp.responseString();
+				}
+				else
+				{
+					HTTPServerResponse resp(500, thisResponse);
+					response = resp.responseString();
+				}
+			}
+			else // otherwise, serve up the edit form
+			{
+				std::string templatePath = m_webContentPath + "form.tplt";
+				std::string title = "Edit Single Test";
+				std::string formContent;
+				
+				long testID = atoi(request.getParam("test_id").c_str());
+				
+				generateEditSingleScheduledTestForm(m_pMainDB, testID, formContent);
+				
+				HTTPServerTemplateFileResponse2 resp(templatePath, title, formContent);
+				response = resp.responseString();
+			}
+		}		
 		else if (request.getPath() == "/view_monitortest")
 		{
 			std::string filePath = m_webContentPath + "view_monitortest.tplt";
@@ -120,7 +165,7 @@ void HTTPServerRequestThread::run()
 			
 			HTTPServerTemplateFileResponse2 resp(filePath, description, dataContent);
 			response = resp.responseString();
-		}		
+		}
 		else if (request.getPath() == "/single_details" && request.hasParams())
 		{
 			long runID = atoi(request.getParam("runid").c_str());

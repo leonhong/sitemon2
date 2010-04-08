@@ -37,10 +37,11 @@ void ScheduledResultSaver::storeResults()
 	m_mutex.lock();
 	
 	SQLiteQuery q(*m_pMainDB, true);
+
+	std::vector<ScheduledResult>::iterator it = m_aResults.begin();
 	
-	while (!m_aResults.empty())
+	for (; it != m_aResults.end();)
 	{
-		std::vector<ScheduledResult>::iterator it = m_aResults.begin();
 		ScheduledResult &result = *it;
 		
 		std::string sql = "insert into scheduled_single_test_results values (";
@@ -56,12 +57,14 @@ void ScheduledResultSaver::storeResults()
 		if (q.execute(sql, true))
 		{
 			// we can delete it now
-			
-			m_aResults.erase(it);			
+						
+			it = m_aResults.erase(it);			
 		}
 		else
 		{
-			// todo: need to see if the error wasn't busy and if so probably delete it
+			// todo: need to see if the error wasn't busy and if so probably delete it, but for now just get the next one
+
+			++it;
 		}
 	}
 	

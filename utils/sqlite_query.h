@@ -18,6 +18,7 @@ public:
 	~SQLiteQuery();
 	
 	bool execute(const std::string &sql, bool retry = false);
+	static int busyCallback(void *pArg, int busy);
 	
 	sqlite3_stmt *getResult(const std::string &sql);
 	void freeResults();

@@ -67,30 +67,57 @@ font:bold;
 color:white;
 }
 
-div.results {
+div.def_wide {
 	overflow:hidden;
 	margin-bottom:20px;
 	*margin-bottom:0;
 	*padding-bottom:20px;
 }
-
-div.results dl {
+div.def_wide dl {
 	clear:both;
 	overflow:hidden;
 	margin:0 0 0px;
 }
-div.results dt {
+div.def_wide dt {
 	width:100px;
 	float:left;
 	clear:left;
 	font-size:0.8em;
 	font-weight:bold;
 }
-div.results dd {
+div.def_wide dd {
 	float:left;
 	padding: 0 0 0.5em 0;
 }
-div.results div.sep {
+div.def_wide div.sep {
+	clear:both;
+	width:100%;
+	height:14px;
+}
+
+div.def_thin {
+	overflow:hidden;
+	margin-bottom:20px;
+	*margin-bottom:0;
+	*padding-bottom:20px;
+}
+div.def_thin dl {
+	clear:both;
+	overflow:hidden;
+	margin:0 0 0px;
+}
+div.def_thin dt {
+	width:40px;
+	float:left;
+	clear:left;
+	font-size:0.8em;
+	font-weight:bold;
+}
+div.def_thin dd {
+	float:left;
+	padding: 0 0 0.5em 0;
+}
+div.def_thin div.sep {
 	clear:both;
 	width:100%;
 	height:14px;

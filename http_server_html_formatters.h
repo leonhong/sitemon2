@@ -11,5 +11,7 @@ void addIntToDL(std::string &output, const std::string &title);
 void addLongToDL(std::string &output, const std::string &title);
 void addFloatToDL(std::string &output, const std::string &title);
 
+bool generateAddSingleScheduledTestForm(std::string &output);
+
 
 #endif

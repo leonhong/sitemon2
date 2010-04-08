@@ -8,6 +8,9 @@
 #include "utils/socket.h"
 #include "scheduler.h"
 
+#ifdef _MSC_VER
+BOOL CtrlHandler(DWORD fdwCtrlType);
+#endif
 static void printUsage();
 
 int main(int argc, char *const argv[])
@@ -27,6 +30,10 @@ int main(int argc, char *const argv[])
 	bool runWeb = false;
 
 	int threads = 0;
+
+#ifdef _MSC_VER
+	SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandler, TRUE);
+#endif
 
 	if (argc == 1 || (argc == 2 && (strcmp(argv[1], "--help") == 0) || strcmp(argv[1], "/?") == 0))
 	{
@@ -84,9 +91,8 @@ int main(int argc, char *const argv[])
 #ifndef _MSC_VER
 	configFile.loadConfigFile("/Users/peter/sm_config.xml");
 #else
-	configFile.loadConfigFile("E:\\sm_config.xml");
+	configFile.loadConfigFile();
 #endif
-//	configFile.loadConfigFile();
 	
 	curl_global_init(CURL_GLOBAL_ALL);
 	
@@ -104,8 +110,13 @@ int main(int argc, char *const argv[])
 		
 		Scheduler schedulerThread(pMainDB);
 		schedulerThread.start();
+
+		std::cout << "Scheduler thread started...\n";
+
+		Thread::sleep(1); // to enable db tables to be created if needed
+
 		//
-		std::cout << "Starting web server on http://localhost:" << 8080 << "/\n";
+		std::cout << "Starting web server on http://localhost:" << 8080 << "/...\n";
 
 		Socket::initWinsocks();		
 		
@@ -179,3 +190,16 @@ void printUsage()
 		   "-oh\t\t: Output headers\n"
 		   "-ob\t\t: Output body\n");
 }
+
+#ifdef _MSC_VER
+BOOL CtrlHandler(DWORD fdwCtrlType)
+{ 
+	switch (fdwCtrlType)
+	{ 
+	case CTRL_C_EVENT:
+	case CTRL_CLOSE_EVENT:
+	default:
+	return TRUE; 
+	}
+}
+#endif

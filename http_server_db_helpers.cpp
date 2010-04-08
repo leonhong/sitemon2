@@ -9,6 +9,7 @@
 
 #include "http_server_db_helpers.h"
 #include "http_server_html_formatters.h"
+#include "http_form_generator.h"
 
 bool createNeededTables(SQLiteDB *pDB)
 {
@@ -219,8 +220,8 @@ bool getSingleScheduledTestsList(SQLiteDB *pDB, std::string &output)
 
 		std::string strAcceptCompressed = (acceptCompressed == 1) ? "YES" : "NO";
 
-		sprintf(szTemp, "<tr>\n <td><a href=\"/edit_monitortest?testid=%ld\">%ld</a></td>\n <td>%s</td>\n <td>%s</td>\n <td>%s</td>\n <td>%ld</td>\n <td>%s</td>\n <td><a href=\"/view_monitortest?testid=%ld\">Results</a></td>\n</tr>\n",
-						testID, testID, strEnabled.c_str(), description.c_str(), url.c_str(), interval, strAcceptCompressed.c_str(), testID);
+		sprintf(szTemp, "<tr>\n <td><a href=\"/edit_monitor_test?test_id=%ld\">Edit</a></td>\n <td>%s</td>\n <td>%s</td>\n <td>%s</td>\n <td>%ld</td>\n <td>%s</td>\n <td><a href=\"/view_monitortest?testid=%ld\">Results</a></td>\n</tr>\n",
+						testID, strEnabled.c_str(), description.c_str(), url.c_str(), interval, strAcceptCompressed.c_str(), testID);
 		
 		output.append(szTemp);		
 	}
@@ -250,6 +251,41 @@ bool addSingleScheduledTest(SQLiteDB *pDB, HTTPServerRequest &request, std::stri
 	char szTemp[1024];
 	memset(szTemp, 0, 1024);
 	sprintf(szTemp, "'%s', '%s', '%s', '%s', %s, %ld)", desc.c_str(), url.c_str(), referer.c_str(), expectedPhrase.c_str(), interval.c_str(), compressed);
+	
+	sql.append(szTemp);
+	
+	SQLiteQuery q(*pDB, true);
+	
+	return q.execute(sql);
+}
+
+bool editSingleScheduledTest(SQLiteDB *pDB, HTTPServerRequest &request, std::string &output)
+{
+	if (!pDB)
+	{
+		output = "No DB Connection";
+		return false;
+	}
+	
+	long rowid = atoi(request.getParam("test_id").c_str());
+	long enabled = 0;
+	if (request.getParam("enabled") == "on")
+		enabled = 1;
+	std::string desc = request.getParam("description");
+	std::string url = request.getParam("url");
+	std::string interval = request.getParam("interval");
+	std::string referer = request.getParam("referer");
+	std::string expectedPhrase = request.getParam("expected_phrase");
+	long compressed = 0;
+	if (request.getParam("accept_compressed") == "on")
+		compressed = 1;
+	
+	std::string sql = "update scheduled_single_tests set ";
+	
+	char szTemp[2048];
+	memset(szTemp, 0, 2048);
+	sprintf(szTemp, "enabled = %ld, description = '%s', url = '%s', referer = '%s', expected_phrase = '%s', interval = %s, accept_compressed = %ld where rowid = %ld", enabled, desc.c_str(),
+			url.c_str(), referer.c_str(), expectedPhrase.c_str(), interval.c_str(), compressed, rowid);
 	
 	sql.append(szTemp);
 	
@@ -289,6 +325,7 @@ bool getSingleScheduledTestResultsList(SQLiteDB *pDB, int testID, std::string &d
 	
 	std::string sql = "select datetime(run_time,'localtime') as rtime, error_code, response_code, lookup_time, connect_time, data_start_time, total_time, download_size, content_size from scheduled_single_test_results where test_id = ";
 	sql.append(szTestID);
+	sql += " order by rowid desc limit 40";
 	
 	SQLiteQuery q(*pDB);
 
@@ -328,5 +365,95 @@ bool getSingleScheduledTestResultsList(SQLiteDB *pDB, int testID, std::string &d
 		output.append(szTemp);		
 	}
 
+	return true;
+}
+
+bool generateEditSingleScheduledTestForm(SQLiteDB *pDB, int testID, std::string &output)
+{
+	if (!pDB)
+		return false;
+	
+	std::string sql = "select enabled, interval, description, url, referer, expected_phrase, accept_compressed from scheduled_single_tests where rowid = ";
+	
+	char szRowID[16];
+	memset(szRowID, 0, 16);
+	sprintf(szRowID, "%ld", testID);
+	
+	sql.append(szRowID);
+	
+	SQLiteQuery q(*pDB, true);
+	
+	q.getResult(sql);
+	if (!q.fetchNext())
+	{
+		output = "Couldn't find requested test to update in db.\n";
+		return false;
+	}
+	
+	long enabled = q.getLong();
+	long interval = q.getLong();
+	std::string description = q.getString();
+	std::string url = q.getString();
+	std::string referrer = q.getString();
+	std::string expectedPhrase = q.getString();
+	long acceptCompressed = q.getLong();
+		
+	HTTPFormGenerator formGen("edit_monitor_test", "Update", true);
+	
+	HTTPFormCheckItem formEnabled("Enable", "enabled", enabled == 1);
+	
+	HTTPFormTextItem formDescription("Description", "description", 40, description);
+	HTTPFormTextItem formURL("URL", "url", 50, url);
+	
+	int selInt = 0;
+	switch (interval)
+	{
+		case 5:
+			selInt = 1;
+			break;
+		case 10:
+			selInt = 2;
+			break;
+		case 15:
+			selInt = 3;
+			break;
+		case 20:
+			selInt = 4;
+			break;
+		case 30:
+			selInt = 5;
+			break;
+		case 60:
+			selInt = 6;
+			break;
+		default:
+			selInt = 0;
+	}
+	
+	HTTPFormSelectItem formInterval("Interval", "interval", selInt);
+	formInterval.addOption("1");
+	formInterval.addOption("5");
+	formInterval.addOption("10");
+	formInterval.addOption("15");
+	formInterval.addOption("20");
+	formInterval.addOption("30");
+	formInterval.addOption("60");
+	
+	HTTPFormTextItem formReferrer("Referrer", "referer", 50, referrer);
+	HTTPFormTextItem formExpectedPhrase("Expected Phrase", "expected_phrase", 60, expectedPhrase);
+	HTTPFormCheckItem formAcceptCompressed("Accept compressed content", "accept_compressed", acceptCompressed == 1);
+	HTTPFormHiddenItem formTestID("test_id", testID);
+	
+	formGen.addItem(formEnabled);
+	formGen.addItem(formDescription);
+	formGen.addItem(formURL);
+	formGen.addItem(formInterval);
+	formGen.addItem(formReferrer);
+	formGen.addItem(formExpectedPhrase);
+	formGen.addItem(formAcceptCompressed);
+	formGen.addItem(formTestID);
+	
+	output = formGen.getGeneratedCode();	
+	
 	return true;
 }

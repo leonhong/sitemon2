@@ -28,8 +28,7 @@ void Scheduler::run()
 	
 	createNeededSchedulerTables(m_pMainDB);
 	
-	buildScheduledItemsFromDB(m_pMainDB);
-	
+	buildScheduledItemsFromDB(m_pMainDB);	
 	
 	int count = 0;
 	while (m_isRunning)
@@ -61,11 +60,15 @@ void Scheduler::run()
 			}			
 		}
 		
-//		printf("starting to sleep...\n");
-		sleep(20); // sleep for 20 secs
-//		printf("finished sleeping...\n");
-		
 		m_scheduledItemsLock.unlock();
+		
+		sleep(19);
+		
+		m_scheduledItemsLock.lock();
+		updateScheduledSingleTests(m_pMainDB, m_aScheduledItems);
+		m_scheduledItemsLock.unlock();
+
+		sleep(1);
 	}
 	
 	if (m_pSaver)
@@ -81,6 +84,7 @@ void Scheduler::buildScheduledItemsFromDB(SQLiteDB *pDB)
 {
 	m_scheduledItemsLock.lock();
 
+	m_aScheduledItems.clear();
 	getScheduledSingleTestsFromDB(pDB, m_aScheduledItems);
 	
 	m_scheduledItemsLock.unlock();

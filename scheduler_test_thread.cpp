@@ -47,6 +47,8 @@ void SchedulerTestThread::run()
 		if (acceptCompressed == 1)
 			request.setAcceptCompressed(true);
 
+		request.setExpectedPhrase(expectedPhrase);
+
 		HTTPResponse response;
 
 		engine.performRequest(request, response);

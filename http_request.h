@@ -59,6 +59,7 @@ public:
 	int getPauseTime() { return m_pauseTime; }
 	bool getStoreHeader() { return m_storeHeader; }
 	bool getStoreBody() { return m_storeBody; }
+	const std::string getExpectedPhrase() { return m_expectedPhrase; }
 	
 	void setRequestType(RequestType requestType) { m_requestType = requestType; }
 	void setDescription(std::string &description) { m_description = description; }
@@ -74,6 +75,7 @@ public:
 	void setPauseTime(int pauseTime) { m_pauseTime = pauseTime; }
 	void setStoreHeader(bool storeHeader) { m_storeHeader = storeHeader; }
 	void setStoreBody(bool storeBody) { m_storeBody = storeBody; }
+	void setExpectedPhrase(std::string &expectedPhrase) { m_expectedPhrase = expectedPhrase; }
 
 	void addParameter(std::string &name, std::string &value);
 	void addCookie(std::string &name, std::string &value);
@@ -86,7 +88,6 @@ public:
 
 	inline std::vector<HTTPCookie>::iterator cookies_begin() { return m_aCookies.begin(); }
 	inline std::vector<HTTPCookie>::iterator cookies_end() { return m_aCookies.end(); }
-
 	
 protected:
 	RequestType		m_requestType;
@@ -105,6 +106,8 @@ protected:
 	std::string		m_contentType;
 	
 	bool			m_acceptCompressed;
+
+	std::string		m_expectedPhrase;
 
 	bool			m_storeHeader;
 	bool			m_storeBody;

@@ -15,12 +15,15 @@
 class ScheduledItem
 {
 public:
+	ScheduledItem() { }
 	ScheduledItem(unsigned long id, const std::string &description, unsigned long interval, unsigned long currentTime);
 	~ScheduledItem() { }
 	
 	void setEnabled(bool enabled) { m_enabled = enabled; }
 	void setTestType(TestType type) { m_testType = type; }
 	void setTestID(unsigned long testID) { m_testID = testID; }
+	void setInterval(unsigned long interval) { m_interval = interval; }
+	void setDescription(std::string &description) { m_description = description; }
 	
 	void incrementNextTime();
 	

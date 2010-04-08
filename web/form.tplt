@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Sitemon Web Interface - Result Details</title>
+<title>Sitemon - <%1%></title>
 <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
 </head>
 <body>
@@ -13,11 +13,6 @@
 </ul>
 <br><br>
 
-<div class="def_wide">
-	<%%>
-<dl>
-	
-</dl>
-</div>
+<%2%>
 </body>
 </html>

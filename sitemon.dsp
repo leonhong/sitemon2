@@ -140,6 +140,10 @@ SOURCE=.\http_engine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\http_form_generator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\http_request.cpp
 # End Source File
 # Begin Source File
@@ -180,11 +184,19 @@ SOURCE=.\results_storage.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\scheduled_results_saver.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\scheduler.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\scheduler_db_helpers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\scheduler_test_thread.cpp
 # End Source File
 # Begin Source File
 
@@ -244,6 +256,10 @@ SOURCE=.\http_engine.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\http_form_generator.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\http_request.h
 # End Source File
 # Begin Source File
@@ -280,11 +296,19 @@ SOURCE=.\results_storage.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\scheduled_results_saver.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\scheduler.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\scheduler_db_helpers.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scheduler_test_thread.h
 # End Source File
 # Begin Source File
 
