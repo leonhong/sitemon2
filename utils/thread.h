@@ -14,6 +14,7 @@ class Thread
 {
 public:
 	Thread();
+	
 	virtual ~Thread();
 
 	static void sleep(int seconds);

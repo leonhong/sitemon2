@@ -26,6 +26,7 @@ int main(int argc, char *const argv[])
 	bool outputBody = false;
 	
 	bool acceptCompressed = false;
+	bool downloadContent = false;
 	
 	bool runWeb = false;
 
@@ -75,6 +76,10 @@ int main(int argc, char *const argv[])
 			else if (strcmp(argv[i], "-ac") == 0)
 			{
 				acceptCompressed = true;
+			}
+			else if (strcmp(argv[i], "-dc") == 0)
+			{
+				downloadContent = true;
 			}
 			else if (strcmp(argv[i], "-web") == 0)
 			{
@@ -142,6 +147,11 @@ int main(int argc, char *const argv[])
 		{
 			request.setAcceptCompressed(true);
 		}
+		
+		if (downloadContent)
+		{
+			request.setDownloadContent(true);
+		}
 
 		performSingleRequest(request, outputHeader);
 	}
@@ -182,10 +192,12 @@ int main(int argc, char *const argv[])
 
 void printUsage()
 {
-	printf("Sitemon version 2.0\nUsage:\nSingle test:\t\tsitemon [<options>] <URL>\n"
-		   "Single Script test:\t\tsitemon [<options>] -s <script_path>\n"
-		   "Script Load test:\tsitemon [<options>] -sm <script_path> <num threads> [output_file]\n"
+	printf("Sitemon version 2.0\nUsage:\nSingle test:\t\t\t\tsitemon [<options>] <URL>\n"
+		   "Single Script test:\t\t\tsitemon [<options>] -s <script_path>\n"
+		   "Script Load test:\t\t\tsitemon [<options>] -sm <script_path> <num threads> [output_file]\n"
+		   "Run local web server for interface:\tsitemon -web\n"
 		   "Options:\n-ac\t\t: Accept compressed content\n"
+		   "-dc\t\t: Download linked JS and Image content\n"
 		   "-ol <val>\t: Output logging level (to screen). 0 = minimal (default), 2 = max.\n"
 		   "-oh\t\t: Output headers\n"
 		   "-ob\t\t: Output body\n");

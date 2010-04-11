@@ -89,8 +89,7 @@ bool updateScheduledSingleTests(SQLiteDB *pDB, std::vector<ScheduledItem> &items
 	if (!pDB)
 		return false;
 
-	// not too efficient copying by val, but as we aren't designing this for more than 100 tests,
-	// should be okay - basically we want to try to keep tests that aren't being 
+	// basically we want to try to keep tests that aren't being 
 	// added or removed and only update the timing interval as this will allow an interval
 	// of 5 to be changed to 10 and the second it gets fired off on to still be the same
 
@@ -145,7 +144,7 @@ bool updateScheduledSingleTests(SQLiteDB *pDB, std::vector<ScheduledItem> &items
 
 			aCurrentPositions.erase(itFind);	
 		}
-		else // new one, so create it
+		else if (enabled == 1) // new one, so create it if needed
 		{
 			ScheduledItem newItem(pos++, description, interval, timeNow);
 			newItem.setTestType(SINGLE_TEST);
@@ -156,23 +155,29 @@ bool updateScheduledSingleTests(SQLiteDB *pDB, std::vector<ScheduledItem> &items
 	}
 
 	// now the remainder in the map can be deleted from the vector in reverse order (from the bottom)
-	std::deque<unsigned long> aTempPos;
-	std::map<unsigned long, unsigned long>::iterator itDel = aCurrentPositions.begin();
-	for (; itDel != aCurrentPositions.end(); ++itDel)
+	if (!aCurrentPositions.empty())
 	{
-		aTempPos.push_front((*itDel).second);
+		std::deque<unsigned long> aTempPos;
+		std::map<unsigned long, unsigned long>::iterator itDel = aCurrentPositions.begin();
+		for (; itDel != aCurrentPositions.end(); ++itDel)
+		{
+			aTempPos.push_front((*itDel).second);
+		}
+
+		std::deque<unsigned long>::iterator itDel2 = aTempPos.begin();
+		for (; itDel2 != aTempPos.end(); ++itDel2)
+		{
+			unsigned long pos2 = *itDel2;
+
+			items.erase(items.begin() + pos2);
+		}
 	}
 
-	std::deque<unsigned long>::iterator itDel2 = aTempPos.begin();
-	for (; itDel2 != aTempPos.end(); ++itDel2)
+	// add any new items on the end
+	if (!aNewTests.empty())
 	{
-		unsigned long pos = *itDel2;
-
-		items.erase(items.begin() + pos);
+		std::copy(aNewTests.begin(), aNewTests.end(), std::inserter(items, items.end()));
 	}
-
-	// add the new items on the end
-	std::copy(aNewTests.begin(), aNewTests.end(), std::inserter(items, items.end()));
 
 	return true;
 }

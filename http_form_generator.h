@@ -58,7 +58,6 @@ public:
 protected:
 	std::vector<std::string> m_aOptions;
 	int m_selected;
-
 };
 
 class HTTPFormHiddenItem : public HTTPFormItem

@@ -240,7 +240,7 @@ bool addSingleScheduledTest(SQLiteDB *pDB, HTTPServerRequest &request, std::stri
 	std::string desc = request.getParam("description");
 	std::string url = request.getParam("url");
 	std::string interval = request.getParam("interval");
-	std::string referer = request.getParam("referer");
+	std::string referrer = request.getParam("referrer");
 	std::string expectedPhrase = request.getParam("expected_phrase");
 	long compressed = 0;
 	if (request.getParam("accept_compressed") == "on")
@@ -250,7 +250,7 @@ bool addSingleScheduledTest(SQLiteDB *pDB, HTTPServerRequest &request, std::stri
 	
 	char szTemp[1024];
 	memset(szTemp, 0, 1024);
-	sprintf(szTemp, "'%s', '%s', '%s', '%s', %s, %ld)", desc.c_str(), url.c_str(), referer.c_str(), expectedPhrase.c_str(), interval.c_str(), compressed);
+	sprintf(szTemp, "'%s', '%s', '%s', '%s', %s, %ld)", desc.c_str(), url.c_str(), referrer.c_str(), expectedPhrase.c_str(), interval.c_str(), compressed);
 	
 	sql.append(szTemp);
 	
@@ -274,7 +274,7 @@ bool editSingleScheduledTest(SQLiteDB *pDB, HTTPServerRequest &request, std::str
 	std::string desc = request.getParam("description");
 	std::string url = request.getParam("url");
 	std::string interval = request.getParam("interval");
-	std::string referer = request.getParam("referer");
+	std::string referrer = request.getParam("referrer");
 	std::string expectedPhrase = request.getParam("expected_phrase");
 	long compressed = 0;
 	if (request.getParam("accept_compressed") == "on")
@@ -285,7 +285,7 @@ bool editSingleScheduledTest(SQLiteDB *pDB, HTTPServerRequest &request, std::str
 	char szTemp[2048];
 	memset(szTemp, 0, 2048);
 	sprintf(szTemp, "enabled = %ld, description = '%s', url = '%s', referer = '%s', expected_phrase = '%s', interval = %s, accept_compressed = %ld where rowid = %ld", enabled, desc.c_str(),
-			url.c_str(), referer.c_str(), expectedPhrase.c_str(), interval.c_str(), compressed, rowid);
+			url.c_str(), referrer.c_str(), expectedPhrase.c_str(), interval.c_str(), compressed, rowid);
 	
 	sql.append(szTemp);
 	
@@ -304,7 +304,7 @@ bool getSingleScheduledTestResultsList(SQLiteDB *pDB, int testID, std::string &d
 	
 	char szTestID[12];
 	memset(szTestID, 0, 12);
-	sprintf(szTestID, "%ld", testID);
+	sprintf(szTestID, "%d", testID);
 	
 	{
 		std::string sql = "select description, url, interval from scheduled_single_tests where rowid = ";
@@ -317,7 +317,6 @@ bool getSingleScheduledTestResultsList(SQLiteDB *pDB, int testID, std::string &d
 		{
 			std::string desc = q.getString();
 			std::string url = q.getString();
-			long interval = q.getLong();
 			
 			description = desc + " : " + url;			
 		}		
@@ -377,7 +376,7 @@ bool generateEditSingleScheduledTestForm(SQLiteDB *pDB, int testID, std::string 
 	
 	char szRowID[16];
 	memset(szRowID, 0, 16);
-	sprintf(szRowID, "%ld", testID);
+	sprintf(szRowID, "%d", testID);
 	
 	sql.append(szRowID);
 	
@@ -439,7 +438,7 @@ bool generateEditSingleScheduledTestForm(SQLiteDB *pDB, int testID, std::string 
 	formInterval.addOption("30");
 	formInterval.addOption("60");
 	
-	HTTPFormTextItem formReferrer("Referrer", "referer", 50, referrer);
+	HTTPFormTextItem formReferrer("Referrer", "referrer", 50, referrer);
 	HTTPFormTextItem formExpectedPhrase("Expected Phrase", "expected_phrase", 60, expectedPhrase);
 	HTTPFormCheckItem formAcceptCompressed("Accept compressed content", "accept_compressed", acceptCompressed == 1);
 	HTTPFormHiddenItem formTestID("test_id", testID);

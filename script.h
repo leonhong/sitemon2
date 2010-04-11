@@ -2,8 +2,7 @@
  *  script.h
  *  sitemon
  *
- *  Created by Peter Pearson on 28/02/2010.
- *  Copyright 2010 __MyCompanyName__. All rights reserved.
+ *  Created by Peter Pearson, 2010.
  *
  */
 

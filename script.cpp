@@ -123,6 +123,10 @@ void Script::loadRequestElement(TiXmlElement *pElement)
 		{
 			loadCookiesElement(pItem, request);
 		}
+		else if (elementName == "referrer")
+		{
+			request.setReferrer(content);
+		}
 	}
 	
 	m_aSteps.push_back(request);

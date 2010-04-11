@@ -4,7 +4,6 @@
 #include "scheduler_db_helpers.h"
 #include "scheduler_test_thread.h"
 
-#define SLEEP_TIME 60
 #define TIME_MULTIPLIER 60 // needs to be 60 for minutes
 
 Scheduler::Scheduler(SQLiteDB *pDB) : m_pMainDB(pDB)

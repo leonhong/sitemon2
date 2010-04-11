@@ -49,7 +49,7 @@ public:
 	const std::string getDescription() { return m_description; }
 	const std::string getUrl() { return m_url; }
 	const std::string getHost() { return m_host; }
-	const std::string getReferer() { return m_referer; }
+	const std::string getReferrer() { return m_referrer; }
 	const std::string getAcceptMain() { return m_acceptMain; }
 	const std::string getAcceptLanguage() { return m_acceptLanguage; }
 	const std::string getAcceptEncoding() { return m_acceptEncoding; }
@@ -60,12 +60,13 @@ public:
 	bool getStoreHeader() { return m_storeHeader; }
 	bool getStoreBody() { return m_storeBody; }
 	const std::string getExpectedPhrase() { return m_expectedPhrase; }
+	bool getDownloadContent() { return m_downloadContent; }
 	
 	void setRequestType(RequestType requestType) { m_requestType = requestType; }
 	void setDescription(std::string &description) { m_description = description; }
 	void setUrl(std::string &url) { m_url = url; }
 	void setHost(std::string &host) { m_host = host; }
-	void setReferer(std::string &referer) { m_referer = referer; }
+	void setReferrer(std::string &referrer) { m_referrer = referrer; }
 	void setAcceptMain(std::string &acceptMain) { m_acceptMain = acceptMain; }
 	void setAcceptLanguage(std::string &acceptLanguage) { m_acceptLanguage = acceptLanguage; }
 	void setAcceptEncoding(std::string &acceptEncoding) { m_acceptEncoding = acceptEncoding; }
@@ -76,6 +77,7 @@ public:
 	void setStoreHeader(bool storeHeader) { m_storeHeader = storeHeader; }
 	void setStoreBody(bool storeBody) { m_storeBody = storeBody; }
 	void setExpectedPhrase(std::string &expectedPhrase) { m_expectedPhrase = expectedPhrase; }
+	void setDownloadContent(bool downloadContent) { m_downloadContent = downloadContent; }
 
 	void addParameter(std::string &name, std::string &value);
 	void addCookie(std::string &name, std::string &value);
@@ -96,7 +98,7 @@ protected:
 	
 	std::string		m_url;
 	std::string		m_host;
-	std::string		m_referer;
+	std::string		m_referrer;
 	
 	std::string		m_acceptMain;
 	std::string		m_acceptLanguage;
@@ -106,6 +108,7 @@ protected:
 	std::string		m_contentType;
 	
 	bool			m_acceptCompressed;
+	bool			m_downloadContent;
 
 	std::string		m_expectedPhrase;
 

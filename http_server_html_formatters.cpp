@@ -17,7 +17,7 @@ bool generateAddSingleScheduledTestForm(std::string &output)
 	interval.addOption("30");
 	interval.addOption("60");
 	
-	HTTPFormTextItem referrer("Referrer", "referer", 60);
+	HTTPFormTextItem referrer("Referrer", "referrer", 60);
 	HTTPFormTextItem expectedPhrase("Expected Phrase", "expected_phrase", 60);
 	HTTPFormCheckItem acceptCompressed("Accept compressed content", "accept_compressed", true);
 	

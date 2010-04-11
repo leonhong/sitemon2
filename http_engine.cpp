@@ -11,6 +11,9 @@
 #include "http_engine.h"
 #include <iostream>
 
+#include "html_parser.h"
+#include "component_downloader.h"
+
 // when creating threads, we want the CURL handle within the thread to create the handle
 // so init it later on
 HTTPEngine::HTTPEngine(bool threaded)
@@ -112,6 +115,9 @@ bool HTTPEngine::extractResponseFromCURLHandle(CURL *handle, HTTPResponse &respo
 	curl_easy_getinfo(handle, CURLINFO_SIZE_DOWNLOAD, &download);
 	response.downloadSize = (long)download;
 	
+	response.totalContentSize = response.contentSize;
+	response.totalDownloadSize = response.downloadSize;
+	
 	curl_easy_getinfo(handle, CURLINFO_CONTENT_TYPE, &content_type);
 	response.contentType.assign(content_type);
 	
@@ -121,7 +127,7 @@ bool HTTPEngine::extractResponseFromCURLHandle(CURL *handle, HTTPResponse &respo
 	return true;
 }
 
-bool HTTPEngine::performRequest(HTTPRequest &request, HTTPResponse &response, bool allowDebug)
+bool HTTPEngine::performRequest(HTTPRequest &request, HTTPResponse &response)
 {
 	if (!setupCURLHandleFromRequest(m_handle, request))
 		return false;
@@ -179,9 +185,10 @@ bool HTTPEngine::performRequest(HTTPRequest &request, HTTPResponse &response, bo
 		return false;
 	}
 
-	// handle expected phrase
+	extractResponseFromCURLHandle(m_handle, response);
 
-	if (allowDebug)
+	// handle expected phrase
+	if (!response.content.empty()) // if we stored the returned content, test for expected phrase
 	{
 		const std::string &expectedPhrase = request.getExpectedPhrase();
 
@@ -190,15 +197,48 @@ bool HTTPEngine::performRequest(HTTPRequest &request, HTTPResponse &response, bo
 			if (response.content.find(expectedPhrase) == -1)
 			{
 				response.errorCode = HTTP_EXPECTED_PHRASE_NOT_FOUND;
+				return false; // for things like scripts, we want to fail here
 			}
-		}	
+		}
 	}
 	
-	extractResponseFromCURLHandle(m_handle, response);
-		
+	if (request.getDownloadContent())
+	{
+		downloadContent(m_handle, response, request.getAcceptCompressed());
+	}
+	
 	curl_easy_cleanup(m_handle);
 
 	return true;
+}
+
+void HTTPEngine::downloadContent(CURL *mainHandle, HTTPResponse &response, bool acceptCompressed)
+{
+	HTMLParser parser(response.content, response.finalURL);
+	parser.parse();
+	
+	std::set<std::string> &aScripts = parser.getScripts();
+	std::set<std::string> &aImages = parser.getImages();
+	
+	ComponentDownloader compDownloader(mainHandle, response, acceptCompressed);
+	
+	std::set<std::string>::iterator it = aScripts.begin();
+	for (; it != aScripts.end(); ++it)
+	{
+		const std::string &url = *it;
+		
+		compDownloader.addURL(url);
+	}
+	
+	it = aImages.begin();
+	for (; it != aImages.end(); ++it)
+	{
+		const std::string &url = *it;
+		
+		compDownloader.addURL(url);
+	}
+	
+	compDownloader.downloadComponents();
 }
 
 static size_t writeBodyData(void *buffer, size_t size, size_t nmemb, void *userp)

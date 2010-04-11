@@ -25,12 +25,14 @@ class HTTPEngine
 public:
 	HTTPEngine(bool threaded = false);
 	
+	void initCURLHandle();
+	bool performRequest(HTTPRequest &request, HTTPResponse &response);
+	
+protected:
 	bool setupCURLHandleFromRequest(CURL *handle, HTTPRequest &request);
-	bool performRequest(HTTPRequest &request, HTTPResponse &response, bool allowDebug = true);
-
 	bool extractResponseFromCURLHandle(CURL *handle, HTTPResponse &response);
 	
-	void initCURLHandle();
+	void downloadContent(CURL *mainHandle, HTTPResponse &response, bool acceptCompressed);
 	
 protected:
 	CURL *	m_handle;	

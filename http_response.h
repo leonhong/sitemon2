@@ -11,6 +11,7 @@
 #define HTTP_RESPONSE_H
 
 #include <string>
+#include <vector>
 
 enum HTTPResponseError
 {
@@ -22,6 +23,36 @@ enum HTTPResponseError
 	HTTP_EXPECTED_PHRASE_NOT_FOUND = -5,
 	HTTP_UNKNOWN_ERROR = -20
 };
+
+class HTTPComponentResponse
+{
+public:
+	HTTPComponentResponse();
+	
+	time_t		timestamp;
+	
+	HTTPResponseError errorCode;
+	long		responseCode;
+	
+	std::string errorString;
+	
+	double		lookupTime;
+	double		connectTime;
+	double		dataStartTime;
+	double		totalTime;
+	
+//	double		redirectTime;
+//	long		redirectCount;
+	
+	std::string		requestedURL;
+	std::string		finalURL;
+	
+	long		contentSize;
+	long		downloadSize;
+	
+	std::string		contentType;
+	std::string		contentEncoding;
+};	
 
 class HTTPResponse
 {
@@ -51,6 +82,9 @@ public:
 
 	long		contentSize;
 	long		downloadSize;
+	
+	long		totalContentSize;
+	long		totalDownloadSize;
 
 	std::string		contentType;
 	std::string		contentEncoding;
@@ -59,6 +93,14 @@ public:
 	int		m_thread;
 	bool	m_storeHeader;
 	bool	m_storeBody;
+	
+	bool	componentProblem;
+	
+	void addComponent(HTTPComponentResponse &component);
+	std::vector<HTTPComponentResponse> &getComponents() { return m_aComponents; }
+	
+protected:
+	std::vector<HTTPComponentResponse> m_aComponents;
 };
 
 #endif

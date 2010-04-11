@@ -2,6 +2,7 @@
 #include "sitemon.h"
 #include "hit_load_request_thread.h"
 #include "results_storage.h"
+#include "html_parser.h"
 
 bool performSingleRequest(HTTPRequest &request, bool outputHeader)
 {
@@ -15,7 +16,7 @@ bool performSingleRequest(HTTPRequest &request, bool outputHeader)
 			std::cout << response.header << "\n";
 		}
 
-		outputResponse(response);
+		outputResponse(request, response);		
 	}
 	else
 	{
@@ -40,7 +41,7 @@ bool performScriptRequest(Script &script)
 
 		if (engine.performRequest(request, response))
 		{
-			outputResponse(response);
+			outputResponse(request, response);
 		}
 		else
 		{
@@ -106,7 +107,7 @@ bool performConcurrentScriptRequest(Script &script, int threads, const std::stri
 	return true;
 }
 
-void outputResponse(const HTTPResponse &response)
+void outputResponse(HTTPRequest &request, const HTTPResponse &response)
 {
 	std::cout << "Final URL:\t\t" << response.finalURL << "\n";
 	std::cout << "Respone code:\t\t" << response.responseCode << "\n\n";
@@ -123,8 +124,8 @@ void outputResponse(const HTTPResponse &response)
 
 	std::cout << "Total time:\t\t" << response.totalTime << " seconds.\n\n";
 	
-	std::cout << "Content size:\t\t" << response.contentSize << "\n";
-	std::cout << "Download size:\t\t" << response.downloadSize << "\n";
+	std::cout << "HTML Content size:\t" << response.contentSize << "\n";
+	std::cout << "HTML Download size:\t" << response.downloadSize << "\n";
 
 	if (response.contentSize > response.downloadSize)
 	{
@@ -132,6 +133,17 @@ void outputResponse(const HTTPResponse &response)
 
 		std::cout << "Compression Savings:\t" << compression << "%\n";
 		std::cout << "Content Encoding:\t" << response.contentEncoding << "\n";
+	}
+	
+	if (request.getDownloadContent())
+	{	
+		std::cout << "Total Content size:\t" << response.totalContentSize << "\n";
+		std::cout << "Total Download size:\t" << response.totalDownloadSize << "\n";
+		
+		if (response.componentProblem)
+		{
+			std::cout << "Issues downloading one or more components...\n";
+		}
 	}
 }
 

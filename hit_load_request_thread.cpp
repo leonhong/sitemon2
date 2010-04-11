@@ -37,5 +37,14 @@ void HitLoadRequestThread::run()
 			if (m_debugLevel > 0)
 				printf("Thread: %i\tOK\n", m_threadID);
 		}
+		else
+		{
+			m_aResponses.push_back(response);
+			
+			if (m_debugLevel > 0)
+				printf("Thread: %i\tError: %i\n", m_threadID, response.errorCode);
+
+			break; // break out and end, as there's been an issue
+		}
 	}
 }

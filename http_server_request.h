@@ -25,7 +25,6 @@ public:
 	std::string getParam(const std::string &name) { return m_aParams[name]; }
 	
 protected:
-	void split(const std::string &str, std::vector<std::string> &lines, const std::string &sep = "\n");
 	void addParams(const std::string &params);
 	
 protected:

@@ -32,7 +32,7 @@ void SchedulerTestThread::run()
 		long enabled = q.getLong();
 		std::string description = q.getString();
 		std::string url = q.getString();
-		std::string referer = q.getString();
+		std::string referrer = q.getString();
 		std::string expectedPhrase = q.getString();
 		long acceptCompressed = q.getLong();
 
@@ -48,6 +48,7 @@ void SchedulerTestThread::run()
 			request.setAcceptCompressed(true);
 
 		request.setExpectedPhrase(expectedPhrase);
+		request.setReferrer(referrer);
 
 		HTTPResponse response;
 
